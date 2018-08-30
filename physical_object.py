@@ -4,10 +4,11 @@ from vector_2D.vector import Vector
 
 
 class PhysicalObject(object):
-    def __init__(self, screen_size, pos=None):
+    def __init__(self, screen_size=None, pos=None):
         if pos:
             self._pos = Vector(*pos)
         else:
+            # FIXME check that screen size exists or catch exception
             self._pos = Vector(randrange(screen_size[0]), randrange(screen_size[1]))
         self._v = Vector()
         self._a = Vector()

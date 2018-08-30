@@ -14,4 +14,4 @@ class Bola(PhysicalObject):
         pygame.draw.circle(screen, self.color, self._pos.int(), self.radio)
 
     def is_clicked(self, mouse):
-        return abs(self._pos - mouse) <= self.radio
+        return abs(self._pos - mouse._pos) <= self.radio
