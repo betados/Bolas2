@@ -11,7 +11,7 @@ class Bola(PhysicalObject):
         self.radio = 10
 
     def draw(self, screen):
-        pygame.draw.circle(screen, self.color, self._pos.int(), self.radio)
+        pygame.draw.circle(screen, self.color, self.pos.int(), self.radio)
 
     def is_clicked(self, mouse):
-        return abs(self._pos - mouse._pos) <= self.radio
+        return abs(self.pos - mouse.pos) <= self.radio

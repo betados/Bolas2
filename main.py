@@ -40,11 +40,11 @@ if __name__ == "__main__":
         #     count = 0
 
         if time:
-            mouse._v = Vector(*pygame.mouse.get_rel()) / time
-        mouse._pos = Vector(*pygame.mouse.get_pos())
+            mouse.v = Vector(*pygame.mouse.get_rel()) / time
+        mouse.pos = Vector(*pygame.mouse.get_pos())
         if pygame.mouse.get_pressed()[0] and owned_bola:
-            print mouse._v
-            owned_bola._v = mouse._v
+            print mouse.v
+            owned_bola.v = mouse.v
 
         for event in events:
             if event.type == pygame.QUIT:
