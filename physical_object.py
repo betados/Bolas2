@@ -4,10 +4,13 @@ from vector_2D.vector import Vector
 
 
 class PhysicalObject(object):
-    def __init__(self, pos=None):
+    def __init__(self, pos, affected_by_gravity=False):
         self.__pos = Vector(*pos)
         self.__v = Vector()
-        self.__a = Vector()
+        if affected_by_gravity:
+            self.__a = Vector(0, 0.0000015)
+        else:
+            self.__a = Vector()
 
     @property
     def pos(self):
