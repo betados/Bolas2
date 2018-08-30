@@ -1,15 +1,11 @@
-from random import randrange
+
 
 from vector_2D.vector import Vector
 
 
 class PhysicalObject(object):
-    def __init__(self, screen_size=None, pos=None):
-        if pos:
-            self.__pos = Vector(*pos)
-        else:
-            # FIXME check that screen size exists or catch exception
-            self.__pos = Vector(randrange(screen_size[0]), randrange(screen_size[1]))
+    def __init__(self, pos=None):
+        self.__pos = Vector(*pos)
         self.__v = Vector()
         self.__a = Vector()
 

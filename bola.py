@@ -5,8 +5,8 @@ from physical_object import PhysicalObject
 
 
 class Bola(PhysicalObject):
-    def __init__(self, res, pos=None):
-        PhysicalObject.__init__(self, res, pos)
+    def __init__(self, pos=None):
+        PhysicalObject.__init__(self, pos)
         self.color = [randrange(255) for _ in range(3)]
         self.radio = 10
 

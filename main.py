@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from bola import Bola
-from physical_object import PhysicalObject
-from vector_2D.vector import Vector
+from random import randrange
 
 import pygame
+from vector_2D.vector import Vector
+
+from bola import Bola
+from physical_object import PhysicalObject
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
@@ -24,8 +26,8 @@ if __name__ == "__main__":
 
     owned_bola = None
 
-    bolas = [Bola(resolution) for _ in range(5)]
-    mouse = PhysicalObject(screen_size=resolution)
+    bolas = [Bola((randrange(resolution[0]), randrange(resolution[1]))) for _ in range(5)]
+    mouse = PhysicalObject((0, 0))
 
     while not done:
         screen.fill((0, 0, 0, 255))
