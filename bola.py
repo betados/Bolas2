@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from random import randrange
 import pygame
-from vector_2D.vector import Vector
+from physical_object import PhysicalObject
 
 
-class Bola(object):
+class Bola(PhysicalObject):
     def __init__(self, res):
-        self.pos = Vector(randrange(res[0]), randrange(res[1]))
+        PhysicalObject.__init__(self, res)
         self.color = [randrange(255) for _ in range(3)]
         self.radio = 10
 
