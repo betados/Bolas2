@@ -4,5 +4,14 @@ from vector_2D.vector import Vector
 
 
 class PhysicalObject(object):
-    def __init__(self, screen_size):
-        self.pos = Vector(randrange(screen_size[0]), randrange(screen_size[1]))
+    def __init__(self, screen_size, pos=None):
+        if pos:
+            self.pos = Vector(*pos)
+        else:
+            self.pos = Vector(randrange(screen_size[0]), randrange(screen_size[1]))
+        self._v = Vector()
+        self._a = Vector()
+
+    def actualize(self, t):
+        self._v += 0.5 * self._a * t ** 2
+        self.pos += self._v * t
