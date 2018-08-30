@@ -6,8 +6,9 @@ from random import randrange
 import pygame
 from vector_2D.vector import Vector
 
+
 from bola import Bola
-from physical_object import PhysicalObject
+from physical_object import PhysicalObject, Interaction
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
@@ -68,6 +69,10 @@ if __name__ == "__main__":
         for bola in bolas:
             bola.draw(screen)
             bola.actualize(time)
+            for bola2 in bolas:
+                if bola != bola2:
+                    if Interaction.check_collision(bola, bola2):
+                        print 'COLISIÓN'
 
         pygame.display.flip()
         reloj.tick(fps)

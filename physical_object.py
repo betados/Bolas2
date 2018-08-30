@@ -1,16 +1,20 @@
-
+# -*- coding: utf-8 -*-
 
 from vector_2D.vector import Vector
 
 
 class PhysicalObject(object):
-    def __init__(self, pos, affected_by_gravity=False):
+    def __init__(self, pos=(0, 0), affected_by_gravity=False):
         self.__pos = Vector(*pos)
         self.__v = Vector()
         if affected_by_gravity:
-            self.__a = Vector(0, 0.0000015)
+            # self.__a = Vector(0, 0.0000015)
+            self.__a = Vector(0, 0.0000001)
         else:
             self.__a = Vector()
+
+        # FIXME esto pinta algo aquí pero si lo quito hay que rehacer check collision
+        self.radio = 0
 
     @property
     def pos(self):
@@ -42,3 +46,16 @@ class PhysicalObject(object):
     def actualize(self, t):
         self.__v += 0.5 * self.__a * t ** 2
         self.__pos += self.__v * t
+
+    def __eq__(self, other):
+        return id(self) == id(other)
+
+    def __ne__(self, other):
+        return id(self) != id(other)
+
+
+class Interaction(object):
+    @staticmethod
+    def check_collision(obj1, obj2):
+        if isinstance(obj1, PhysicalObject) and isinstance(obj2, PhysicalObject):
+            return abs(obj1.pos - obj2.pos) <= (obj1.radio + obj2.radio)

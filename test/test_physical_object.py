@@ -20,3 +20,13 @@ class TestPhysicalObject(unittest.TestCase):
         self.assertEqual(po.pos(), (51, 50))
         po.actualize(1)
         self.assertEqual(po.pos(), (52, 50))
+
+    def test_eq(self):
+        po = PhysicalObject()
+        po2 = PhysicalObject()
+
+        self.assertTrue(po != po2)
+        self.assertFalse(po == po2)
+
+        self.assertTrue(po == po)
+        self.assertFalse(po != po)

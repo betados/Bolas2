@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from random import randrange
 import pygame
-from physical_object import PhysicalObject
+from physical_object import PhysicalObject, Interaction
 
 
 class Bola(PhysicalObject):
@@ -14,4 +14,4 @@ class Bola(PhysicalObject):
         pygame.draw.circle(screen, self.color, self.pos.int(), self.radio)
 
     def is_clicked(self, mouse):
-        return abs(self.pos - mouse.pos) <= self.radio
+        return Interaction.check_collision(self, mouse)
