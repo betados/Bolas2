@@ -6,10 +6,10 @@ from vector_2D.vector import Vector
 from physical_object import PhysicalObject
 
 
-class TestVector(unittest.TestCase):
+class TestPhysicalObject(unittest.TestCase):
     def test_init(self):
         po = PhysicalObject((640, 480), (50, 50))
-        self.assertEqual(po.pos(), (50, 50))
+        self.assertEqual(po._pos(), (50, 50))
 
     def test_actualize(self):
         po = PhysicalObject((640, 480), (50, 50))
@@ -17,6 +17,6 @@ class TestVector(unittest.TestCase):
         self.assertEqual(po._v, Vector(0, 0))
         po._v = Vector(1, 0)
         po.actualize(1)
-        self.assertEqual(po.pos(), (51, 50))
+        self.assertEqual(po._pos(), (51, 50))
         po.actualize(1)
-        self.assertEqual(po.pos(), (52, 50))
+        self.assertEqual(po._pos(), (52, 50))
