@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+from bola import Bola
 
 import pygame
 
@@ -19,8 +20,14 @@ if __name__ == "__main__":
     fps = 20
     count = 9999
 
+    bolas = [Bola(resolution) for _ in range(5)]
+
     while not done:
         screen.fill((0, 0, 0, 255))
+
+        for bola in bolas:
+            bola.draw(screen)
+
         events = pygame.event.get()
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
