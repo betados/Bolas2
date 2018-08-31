@@ -8,7 +8,7 @@ from vector_2D.vector import Vector
 
 
 from bola import Bola
-from physical_object import RoundObject, Interaction
+from physical_object import RoundObject, LineObject, Interaction
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode(resolution, pygame.SRCALPHA, 32)
 
     done = False
-    fps = 50
+    fps = 60
     count = 9999
 
     owned_bola = None
@@ -30,6 +30,7 @@ if __name__ == "__main__":
     bolas = [Bola(color=[randrange(255) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
              for _ in range(5)]
+    floor = LineObject((0, resolution[1]), resolution, static=True)
     mouse = RoundObject((0, 0))
 
     while not done:
@@ -70,9 +71,10 @@ if __name__ == "__main__":
         for bola in bolas:
             bola.draw(screen)
             bola.actualize(time)
+            Interaction.check_collision(bola, floor)
             for bola2 in bolas:
                 if bola != bola2:
-                    Interaction.manage_collision(bola, bola2)
+                    Interaction.check_collision(bola, bola2)
 
         pygame.display.flip()
         reloj.tick(fps)

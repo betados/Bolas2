@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from math import pi
-
-from vector_2D.vector import Vector
+from vector_2D.vector import *
 
 
 class PhysicalObject(object):
-    def __init__(self, pos=(0, 0), affected_by_gravity=False, mass=10):
+    def __init__(self, pos=(0, 0), affected_by_gravity=False, mass=10, static=False):
         self.__pos = Vector(*pos)
         self.__v = Vector()
         self.__a = Vector()
@@ -64,8 +62,6 @@ class PhysicalObject(object):
         self.__forces.append(force)
 
 
-# TODO implement children: round_object, rect_object
-
 class RoundObject(PhysicalObject):
     def __init__(self, pos, radio=0, **kwargs):
         kwargs['mass'] = (4 / 3.0) * pi * radio ** 3
@@ -73,23 +69,42 @@ class RoundObject(PhysicalObject):
         self.radio = radio
 
 
-class RectObject(PhysicalObject):
+class LineObject(PhysicalObject):
+    def __init__(self, p1, p2, **kwargs):
+        PhysicalObject.__init__(self, p1, **kwargs)
+        self.__p1 = Vector(*p1)
+        self.__p2 = Vector(*p2)
+
+    @property
+    def points(self):
+        return self.__p1, self.__p2
+
+
+class RectObject(LineObject):
     def __init__(self, rect, **kwargs):
-        PhysicalObject.__init__(self, rect[:2], **kwargs)
-        self.rect = rect
+        pass
+        # FIXME los Rect no heredan de Line, son 4 Lines
+        # PhysicalObject.__init__(self, rect[:2], **kwargs)
+        # self.rect = rect
 
 
 class Interaction(object):
     @staticmethod
     def check_collision(obj1, obj2):
-        if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
-            return abs(obj1.pos - obj2.pos) <= (obj1.radio + obj2.radio)
+        if isinstance(obj1, RoundObject) and isinstance(obj2, LineObject):
+            if obj1.radio > distance_line_point(obj1.pos, obj2.points):
+                overlap = obj1.radio - distance_line_point(obj1.pos, obj2.points)
+                normal = (obj2.points[0] - obj2.points[1]).normal()
 
-    @staticmethod
-    def manage_collision(obj1, obj2):
-        if Interaction.check_collision(obj1, obj2):
-            obj1.append_force((obj1.pos - obj2.pos).unit() * ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos)))
+                obj1.append_force(
+                    # FIXME ese menos no tiene por que se siempre menos. Calcular!!!!
+                    -normal * overlap)
+        elif isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
+            # fixme calcular overlap antes del if para no calcular dos veces
+            if abs(obj1.pos - obj2.pos) <= (obj1.radio + obj2.radio):
+                overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
+                obj1.append_force((obj1.pos - obj2.pos).unit() * overlap)
 
     @staticmethod
     def is_clicked(obj, mouse):
-        return Interaction.check_collision(obj, mouse)
+        return abs(obj.pos - mouse.pos) <= obj.radio
