@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
-from random import randrange
+
 import pygame
-from physical_object import PhysicalObject, Interaction
+from physical_object import *
 
 
-class Bola(PhysicalObject):
-    def __init__(self, pos=None):
-        PhysicalObject.__init__(self, pos, affected_by_gravity=True)
-        self.color = [randrange(255) for _ in range(3)]
-        self.radio = 15
+class Bola(RoundObject):
+    def __init__(self, color, pos=None, radio=15):
+        RoundObject.__init__(self, pos, radio, affected_by_gravity=True)
+        self.color = color
 
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.pos.int(), self.radio)
-
-    def is_clicked(self, mouse):
-        return Interaction.check_collision(self, mouse)

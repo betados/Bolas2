@@ -13,9 +13,6 @@ class PhysicalObject(object):
         else:
             self.__a = Vector()
 
-        # FIXME esto pinta algo aquí pero si lo quito hay que rehacer check collision
-        self.radio = 0
-
     @property
     def pos(self):
         return self.__pos
@@ -44,6 +41,7 @@ class PhysicalObject(object):
         self.__a = value
 
     def actualize(self, t):
+        # KINETIC EQUATIONS
         self.__v += 0.5 * self.__a * t ** 2
         self.__pos += self.__v * t
 
@@ -53,9 +51,26 @@ class PhysicalObject(object):
     def __ne__(self, other):
         return id(self) != id(other)
 
+    def is_clicked(self, mouse):
+        return Interaction.check_collision(self, mouse)
+
+
+# TODO implement children: round_object, rect_object
+
+class RoundObject(PhysicalObject):
+    def __init__(self, pos, radio=0, **kwargs):
+        PhysicalObject.__init__(self, pos, **kwargs)
+        self.radio = radio
+
+
+class RectObject(PhysicalObject):
+    def __init__(self, rect, **kwargs):
+        PhysicalObject.__init__(self, rect[:2], **kwargs)
+        self.rect = rect
+
 
 class Interaction(object):
     @staticmethod
     def check_collision(obj1, obj2):
-        if isinstance(obj1, PhysicalObject) and isinstance(obj2, PhysicalObject):
+        if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
             return abs(obj1.pos - obj2.pos) <= (obj1.radio + obj2.radio)

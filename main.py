@@ -8,7 +8,7 @@ from vector_2D.vector import Vector
 
 
 from bola import Bola
-from physical_object import PhysicalObject, Interaction
+from physical_object import PhysicalObject, RoundObject, Interaction
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
@@ -27,8 +27,10 @@ if __name__ == "__main__":
 
     owned_bola = None
 
-    bolas = [Bola((randrange(resolution[0]), randrange(resolution[1]))) for _ in range(5)]
-    mouse = PhysicalObject((0, 0))
+    bolas = [Bola(color=[randrange(255) for _ in range(3)],
+                  pos=(randrange(resolution[0]), randrange(resolution[1])))
+             for _ in range(5)]
+    mouse = RoundObject((0, 0))
 
     while not done:
         screen.fill((0, 0, 0, 255))
@@ -46,7 +48,6 @@ if __name__ == "__main__":
             mouse.v = Vector(*pygame.mouse.get_rel()) / time
         mouse.pos = Vector(*pygame.mouse.get_pos())
         if pygame.mouse.get_pressed()[0] and owned_bola:
-            print mouse.v
             owned_bola.v = mouse.v
 
         for event in events:
