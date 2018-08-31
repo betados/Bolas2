@@ -40,8 +40,9 @@ class PhysicalObject(object):
         self.__a = value
 
     def actualize(self, t):
+        # FORCES
         if self.affected_by_gravity:
-            self.__forces.append(Vector(0, 0.01))
+            self.__forces.append(Vector(0, 0.05))
         force = sum(self.__forces, Vector())
         self.__a = force / self.mass
 
@@ -92,17 +93,15 @@ class Interaction(object):
     @staticmethod
     def check_collision(obj1, obj2):
         if isinstance(obj1, RoundObject) and isinstance(obj2, LineObject):
-            if obj1.radio > distance_line_point(obj1.pos, obj2.points):
-                overlap = obj1.radio - distance_line_point(obj1.pos, obj2.points)
+            overlap = obj1.radio - distance_line_point(obj1.pos, obj2.points)
+            if overlap > 0:
                 normal = (obj2.points[0] - obj2.points[1]).normal()
-
                 obj1.append_force(
                     # FIXME ese menos no tiene por que se siempre menos. Calcular!!!!
                     -normal * overlap)
         elif isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
-            # fixme calcular overlap antes del if para no calcular dos veces
-            if abs(obj1.pos - obj2.pos) <= (obj1.radio + obj2.radio):
-                overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
+            overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
+            if overlap > 0:
                 obj1.append_force((obj1.pos - obj2.pos).unit() * overlap)
 
     @staticmethod

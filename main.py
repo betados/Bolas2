@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     bolas = [Bola(color=[randrange(255) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
-             for _ in range(5)]
+             for _ in range(50)]
     floor = LineObject((0, resolution[1]), resolution, static=True)
     mouse = RoundObject((0, 0))
 
@@ -55,9 +55,9 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for bola in bolas:
-                    if Interaction.is_clicked(bola, mouse):
-                        owned_bola = bola
+                for bola1 in bolas:
+                    if Interaction.is_clicked(bola1, mouse):
+                        owned_bola = bola1
             if event.type == pygame.MOUSEBUTTONUP:
                 owned_bola = None
 
@@ -68,13 +68,13 @@ if __name__ == "__main__":
         if keys[pygame.K_ESCAPE]:
             done = True
 
-        for bola in bolas:
-            bola.draw(screen)
-            bola.actualize(time)
-            Interaction.check_collision(bola, floor)
+        for bola1 in bolas:
+            bola1.draw(screen)
+            bola1.actualize(time)
+            Interaction.check_collision(bola1, floor)
             for bola2 in bolas:
-                if bola != bola2:
-                    Interaction.check_collision(bola, bola2)
+                if bola1 != bola2:
+                    Interaction.check_collision(bola1, bola2)
 
         pygame.display.flip()
         reloj.tick(fps)
