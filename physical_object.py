@@ -83,32 +83,42 @@ class LineObject(PhysicalObject):
         return self.__p1, self.__p2
 
 
-class RectObject(LineObject):
-    def __init__(self, rect, **kwargs):
-        pass
-        # FIXME los Rect no heredan de Line, son 4 Lines
-        # PhysicalObject.__init__(self, rect[:2], **kwargs)
-        # self.rect = rect
+class RectObject(object):
+    def __init__(self, rect):
+        points = [Vector(*rect[:2]), ]
+        points.append(points[-1] + Vector(0, rect[2]))
+        points.append(points[-1] + Vector(rect[3], 0))
+        points.append(points[-1] - Vector(0, rect[2]))
+
+        self.lines = [LineObject(points[i], points[i - 1], static=True) for i in range(len(points))]
 
 
 class Interaction(object):
     @staticmethod
     def check_collision(obj1, obj2):
         if isinstance(obj1, RoundObject) and isinstance(obj2, LineObject):
-            # overlap = obj1.radio - distance_point_line(obj1.pos, obj2.points)
-            overlap = obj1.radio - distance_point_segment(obj1.pos, obj2.points)
-            if overlap > 0:
-                normal = (obj2.points[0] - obj2.points[1]).normal()
-                obj1.append_force(
-                    # FIXME ese menos no tiene por que se siempre menos. Calcular!!!!
-                    # FIXME puede hacerse que solo una cara sea rebotante y esa dependa de orden de los puntos al crear
-                    normal * overlap)
+            Interaction.manage_round_line_collision(obj1, obj2)
             return
+
         if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
             overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
             if overlap > 0:
                 obj1.append_force((obj1.pos - obj2.pos).unit() * overlap)
             return
+
+        if isinstance(obj1, RoundObject) and isinstance(obj2, RectObject):
+            for line in obj2.lines:
+                Interaction.manage_round_line_collision(obj1, line)
+
+    @staticmethod
+    def manage_round_line_collision(obj1, obj2):
+        overlap = obj1.radio - distance_point_segment(obj1.pos, obj2.points)
+        if overlap > 0:
+            normal = (obj2.points[0] - obj2.points[1]).normal()
+            obj1.append_force(
+                # FIXME ese menos no tiene por que se siempre menos. Calcular!!!!
+                # FIXME puede hacerse que solo una cara sea rebotante y esa dependa de orden de los puntos al crear
+                normal * overlap)
 
     @staticmethod
     def is_clicked(obj, mouse):

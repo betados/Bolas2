@@ -7,7 +7,7 @@ import pygame
 from vector_2D import Vector
 
 from bola import Bola
-from physical_object import Interaction, LineObject, RoundObject
+from physical_object import Interaction, LineObject, RoundObject, RectObject
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
@@ -35,7 +35,8 @@ if __name__ == "__main__":
     walls = (LineObject((0, 0), (0, resolution[1]), static=True),
              LineObject(resolution, (resolution[0], 0), static=True),
              )
-    platform = LineObject((100, resolution[1]-200), (350, resolution[1]-200), static=True)
+    # platform = LineObject((100, resolution[1]-200), (350, resolution[1]-200), static=True)
+    platform = RectObject((100, resolution[1]-300, 500, 200))
     box = (floor, ceiling, platform) + walls
     mouse = RoundObject((0, 0))
 
