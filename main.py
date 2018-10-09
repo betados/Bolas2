@@ -30,13 +30,14 @@ if __name__ == "__main__":
     bolas = [Bola(color=[randrange(255) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
              for _ in range(5)]
-    # floor = LineObject((0, resolution[1]), resolution, static=True)
-    floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
+    floor = LineObject((0, resolution[1]), resolution, static=True)
+    # floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
     ceiling = LineObject((resolution[0], 0), (0, 0), static=True)
     walls = (LineObject((0, 0), (0, resolution[1]), static=True),
              LineObject(resolution, (resolution[0], 0), static=True),
              )
-    box = (floor, ceiling) + walls
+    platform = LineObject((100, resolution[1]-200), (350, resolution[1]-200), static=True)
+    box = (floor, ceiling, platform) + walls
     mouse = RoundObject((0, 0))
 
     while not done:

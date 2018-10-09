@@ -93,7 +93,8 @@ class Interaction(object):
     @staticmethod
     def check_collision(obj1, obj2):
         if isinstance(obj1, RoundObject) and isinstance(obj2, LineObject):
-            overlap = obj1.radio - distance_point_line(obj1.pos, obj2.points)
+            # overlap = obj1.radio - distance_point_line(obj1.pos, obj2.points)
+            overlap = obj1.radio - distance_point_segment(obj1.pos, obj2.points)
             if overlap > 0:
                 normal = (obj2.points[0] - obj2.points[1]).normal()
                 obj1.append_force(
