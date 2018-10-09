@@ -93,13 +93,13 @@ class Interaction(object):
     @staticmethod
     def check_collision(obj1, obj2):
         if isinstance(obj1, RoundObject) and isinstance(obj2, LineObject):
-            overlap = obj1.radio - distance_line_point(obj1.pos, obj2.points)
+            overlap = obj1.radio - distance_point_line(obj1.pos, obj2.points)
             if overlap > 0:
                 normal = (obj2.points[0] - obj2.points[1]).normal()
                 obj1.append_force(
                     # FIXME ese menos no tiene por que se siempre menos. Calcular!!!!
                     # FIXME puede hacerse que solo una cara sea rebotante y esa dependa de orden de los puntos al crear
-                    -normal * overlap)
+                    normal * overlap)
             return
         if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
             overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
