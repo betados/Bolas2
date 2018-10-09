@@ -29,8 +29,14 @@ if __name__ == "__main__":
 
     bolas = [Bola(color=[randrange(255) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
-             for _ in range(50)]
-    floor = LineObject((0, resolution[1]), resolution, static=True)
+             for _ in range(5)]
+    # floor = LineObject((0, resolution[1]), resolution, static=True)
+    floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
+    ceiling = LineObject((resolution[0], 0), (0, 0), static=True)
+    walls = (LineObject((0, 0), (0, resolution[1]), static=True),
+             LineObject(resolution, (resolution[0], 0), static=True),
+             )
+    box = (floor, ceiling) + walls
     mouse = RoundObject((0, 0))
 
     while not done:
@@ -55,9 +61,9 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for bola1 in bolas:
-                    if Interaction.is_clicked(bola1, mouse):
-                        owned_bola = bola1
+                for bola in bolas:
+                    if Interaction.is_clicked(bola, mouse):
+                        owned_bola = bola
             if event.type == pygame.MOUSEBUTTONUP:
                 owned_bola = None
 
@@ -71,7 +77,9 @@ if __name__ == "__main__":
         for bola1 in bolas:
             bola1.draw(screen)
             bola1.actualize(time)
-            Interaction.check_collision(bola1, floor)
+            for element in box:
+                # FIXME si va demasiado rápido atraviesa
+                Interaction.check_collision(bola1, element)
             for bola2 in bolas:
                 if bola1 != bola2:
                     Interaction.check_collision(bola1, bola2)

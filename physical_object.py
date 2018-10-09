@@ -98,11 +98,14 @@ class Interaction(object):
                 normal = (obj2.points[0] - obj2.points[1]).normal()
                 obj1.append_force(
                     # FIXME ese menos no tiene por que se siempre menos. Calcular!!!!
+                    # FIXME puede hacerse que solo una cara sea rebotante y esa dependa de orden de los puntos al crear
                     -normal * overlap)
-        elif isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
+            return
+        if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
             overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
             if overlap > 0:
                 obj1.append_force((obj1.pos - obj2.pos).unit() * overlap)
+            return
 
     @staticmethod
     def is_clicked(obj, mouse):
