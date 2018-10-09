@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from vector_2D.vector import *
+from math import pi
+
+from vector_2D import *
 
 
 class PhysicalObject(object):

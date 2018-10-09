@@ -4,11 +4,10 @@ import sys
 from random import randrange
 
 import pygame
-from vector_2D.vector import Vector
-
+from vector_2D import Vector
 
 from bola import Bola
-from physical_object import RoundObject, LineObject, Interaction
+from physical_object import Interaction, LineObject, RoundObject
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
