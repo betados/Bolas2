@@ -6,7 +6,7 @@ from random import randrange
 import pygame
 from vector_2D import Vector
 
-from bola import Bola
+from objects import Bola, Rect
 from physical_object import Interaction, LineObject, RoundObject, RectObject
 
 if __name__ == "__main__":
@@ -36,7 +36,7 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0), static=True),
              )
     # platform = LineObject((100, resolution[1]-200), (350, resolution[1]-200), static=True)
-    platform = RectObject((100, resolution[1]-300, 500, 200))
+    platform = Rect((150, 150, 50), (100, resolution[1] - 300, 500, 200))
     box = (floor, ceiling, platform) + walls
     mouse = RoundObject((0, 0))
 
@@ -81,6 +81,11 @@ if __name__ == "__main__":
             for element in box:
                 # FIXME si va demasiado rápido atraviesa
                 Interaction.check_collision(bola1, element)
+                try:
+                    # FIXME todos debería tener metodo draw para no poner try
+                    element.draw(screen)
+                except AttributeError:
+                    pass
             for bola2 in bolas:
                 if bola1 != bola2:
                     Interaction.check_collision(bola1, bola2)

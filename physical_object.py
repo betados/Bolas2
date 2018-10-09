@@ -90,6 +90,8 @@ class RectObject(object):
         points.append(points[-1] + Vector(rect[3], 0))
         points.append(points[-1] - Vector(0, rect[2]))
 
+        self.rect = rect
+
         self.lines = [LineObject(points[i], points[i - 1], static=True) for i in range(len(points))]
 
 
