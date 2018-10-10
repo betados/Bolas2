@@ -2,7 +2,7 @@
 
 from math import pi
 
-from vector_2D import *
+from vector_2d import *
 
 
 class PhysicalObject(object):

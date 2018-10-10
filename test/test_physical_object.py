@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from vector_2D.vector import Vector
+from vector_2d import *
 
 from physical_object import PhysicalObject
 

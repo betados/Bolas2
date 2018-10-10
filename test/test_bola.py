@@ -3,9 +3,9 @@
 import unittest
 from physical_object import PhysicalObject
 
-from vector_2D.vector import Vector
+from vector_2d import *
 
-from bola import Bola
+from objects import Bola
 
 
 class TestBola(unittest.TestCase):

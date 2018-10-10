@@ -4,7 +4,7 @@ import sys
 from random import randrange
 
 import pygame
-from vector_2D import Vector
+from vector_2d import Vector
 
 from objects import Bola, Rect
 from physical_object import Interaction, LineObject, RoundObject, RectObject
@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     bolas = [Bola(color=[randrange(255) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
-             for _ in range(5)]
+             for _ in range(10)]
     floor = LineObject((0, resolution[1]), resolution, static=True)
     # floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
     ceiling = LineObject((resolution[0], 0), (0, 0), static=True)
