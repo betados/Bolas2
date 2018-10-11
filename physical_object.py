@@ -101,19 +101,20 @@ class RectObject(object):
 class Interaction(object):
     @staticmethod
     def check_collision(obj1, obj2):
-        if isinstance(obj1, RoundObject) and isinstance(obj2, LineObject):
-            Interaction.manage_round_line_collision(obj1, obj2)
-            return
+        if id(obj1) != id(obj2):
+            if isinstance(obj1, RoundObject) and isinstance(obj2, LineObject):
+                Interaction.manage_round_line_collision(obj1, obj2)
+                return
 
-        if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
-            overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
-            if overlap > 0:
-                obj1.append_force((obj1.pos - obj2.pos).unit() * overlap)
-            return
+            if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
+                overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
+                if overlap > 0:
+                    obj1.append_force((obj1.pos - obj2.pos).unit() * overlap)
+                return
 
-        if isinstance(obj1, RoundObject) and isinstance(obj2, RectObject):
-            for line in obj2.lines:
-                Interaction.manage_round_line_collision(obj1, line)
+            if isinstance(obj1, RoundObject) and isinstance(obj2, RectObject):
+                for line in obj2.lines:
+                    Interaction.manage_round_line_collision(obj1, line)
 
     @staticmethod
     def manage_round_line_collision(obj1, obj2):

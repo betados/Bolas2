@@ -87,8 +87,7 @@ if __name__ == "__main__":
                 except AttributeError:
                     pass
             for bola2 in bolas:
-                if bola1 != bola2:
-                    Interaction.check_collision(bola1, bola2)
+                Interaction.check_collision(bola1, bola2)
 
         pygame.display.flip()
         reloj.tick(fps)
