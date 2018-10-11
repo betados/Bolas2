@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division
+
 from math import pi
 
 from vector_2d import *
@@ -85,6 +87,7 @@ class LineObject(PhysicalObject):
 
 class RectObject(object):
     def __init__(self, rect):
+        # TODO the rect objects could have round ones on corners to improve bounces
         points = [Vector(*rect[:2]), ]
         points.append(points[-1] + Vector(rect[2], 0))
         points.append(points[-1] + Vector(0, rect[3]))
