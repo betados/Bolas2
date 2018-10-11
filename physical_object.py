@@ -46,12 +46,13 @@ class PhysicalObject(object):
     def actualize(self, t):
         # FORCES
         if self.affected_by_gravity:
-            self.__forces.append(Vector(0, 0.05))
+            self.__forces.append(Vector(0, 0.09))
         force = sum(self.__forces, Vector())
         self.__a = force / self.mass
 
         # KINETIC EQUATIONS
-        self.__v += 0.5 * self.__a * t ** 2
+        # self.__v += 0.5 * self.__a * t ** 2
+        self.__v += self.__a * t
         self.__pos += self.__v * t
 
         # WIPE FORCES
@@ -72,6 +73,7 @@ class RoundObject(PhysicalObject):
         kwargs['mass'] = (4 / 3.0) * pi * radio ** 3
         PhysicalObject.__init__(self, pos, **kwargs)
         self.radio = radio
+        self.k = 9
 
 
 class LineObject(PhysicalObject):
@@ -109,7 +111,7 @@ class Interaction(object):
             if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
                 overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
                 if overlap > 0:
-                    obj1.append_force((obj1.pos - obj2.pos).unit() * overlap)
+                    obj1.append_force((obj1.pos - obj2.pos).unit() * overlap * obj1.k)
                 return
 
             if isinstance(obj1, RoundObject) and isinstance(obj2, RectObject):
@@ -124,7 +126,7 @@ class Interaction(object):
             obj1.append_force(
                 # FIXME ese menos no tiene por que se siempre menos. Calcular!!!!
                 # FIXME puede hacerse que solo una cara sea rebotante y esa dependa de orden de los puntos al crear
-                normal * overlap)
+                normal * overlap * obj1.k)
 
     @staticmethod
     def is_clicked(obj, mouse):

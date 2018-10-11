@@ -21,14 +21,14 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode(resolution, pygame.SRCALPHA, 32)
 
     done = False
-    fps = 60
+    fps = 120
     count = 9999
 
     owned_bola = None
 
     bolas = [Bola(color=[randrange(20) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
-             for _ in range(10)]
+             for _ in range(20)]
     floor = LineObject((0, resolution[1]), resolution, static=True)
     # floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
     ceiling = LineObject((resolution[0], 0), (0, 0), static=True)
