@@ -86,13 +86,13 @@ class LineObject(PhysicalObject):
 class RectObject(object):
     def __init__(self, rect):
         points = [Vector(*rect[:2]), ]
-        points.append(points[-1] + Vector(0, rect[2]))
-        points.append(points[-1] + Vector(rect[3], 0))
-        points.append(points[-1] - Vector(0, rect[2]))
+        points.append(points[-1] + Vector(rect[2], 0))
+        points.append(points[-1] + Vector(0, rect[3]))
+        points.append(points[-1] - Vector(rect[2], 0))
 
         self.rect = rect
 
-        self.lines = [LineObject(points[i], points[i - 1], static=True) for i in range(len(points))]
+        self.lines = [LineObject(points[i - 1], points[i], static=True) for i in range(len(points))]
 
 
 class Interaction(object):
