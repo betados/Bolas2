@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import pygame
-from physical_object import *
+from rigidBodies import *
 
 
-class Bola(RoundObject):
+class Bola(RoundBody):
     def __init__(self, color, pos=None, radio=15):
-        RoundObject.__init__(self, pos, radio, affected_by_gravity=True)
+        RoundBody.__init__(self, pos, radio, affected_by_gravity=True)
         self.color = color
 
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.pos.int(), self.radio)
 
 
-class Rect(RectObject):
+class Rect(RectBody):
     def __init__(self, color, rect):
-        RectObject.__init__(self, rect)
+        RectBody.__init__(self, rect)
         self.color = color
 
     def draw(self, screen):

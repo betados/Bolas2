@@ -7,7 +7,7 @@ from math import pi
 from vector_2d import *
 
 
-class PhysicalObject(object):
+class RigidBody(object):
     def __init__(self, pos=(0, 0), affected_by_gravity=False, mass=10, static=False):
         self.__pos = Vector(*pos)
         self.__v = Vector()
@@ -68,17 +68,17 @@ class PhysicalObject(object):
         self.__forces.append(force)
 
 
-class RoundObject(PhysicalObject):
+class RoundBody(RigidBody):
     def __init__(self, pos, radio=0, **kwargs):
         kwargs['mass'] = (4 / 3.0) * pi * radio ** 3
-        PhysicalObject.__init__(self, pos, **kwargs)
+        RigidBody.__init__(self, pos, **kwargs)
         self.radio = radio
         self.k = 9
 
 
-class LineObject(PhysicalObject):
+class LineObject(RigidBody):
     def __init__(self, p1, p2, **kwargs):
-        PhysicalObject.__init__(self, p1, **kwargs)
+        RigidBody.__init__(self, p1, **kwargs)
         self.__p1 = Vector(*p1)
         self.__p2 = Vector(*p2)
 
@@ -87,7 +87,7 @@ class LineObject(PhysicalObject):
         return self.__p1, self.__p2
 
 
-class RectObject(object):
+class RectBody(object):
     def __init__(self, rect):
         # TODO the rect objects could have round ones on corners to improve bounces
         points = [Vector(*rect[:2]), ]
@@ -104,17 +104,17 @@ class Interaction(object):
     @staticmethod
     def check_collision(obj1, obj2):
         if id(obj1) != id(obj2):
-            if isinstance(obj1, RoundObject) and isinstance(obj2, LineObject):
+            if isinstance(obj1, RoundBody) and isinstance(obj2, LineObject):
                 Interaction.manage_round_line_collision(obj1, obj2)
                 return
 
-            if isinstance(obj1, RoundObject) and isinstance(obj2, RoundObject):
+            if isinstance(obj1, RoundBody) and isinstance(obj2, RoundBody):
                 overlap = ((obj1.radio + obj2.radio) - abs(obj1.pos - obj2.pos))
                 if overlap > 0:
                     obj1.append_force((obj1.pos - obj2.pos).unit() * overlap * obj1.k)
                 return
 
-            if isinstance(obj1, RoundObject) and isinstance(obj2, RectObject):
+            if isinstance(obj1, RoundBody) and isinstance(obj2, RectBody):
                 for line in obj2.lines:
                     Interaction.manage_round_line_collision(obj1, line)
 
