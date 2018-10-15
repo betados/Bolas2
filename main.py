@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     bolas = [Bola(color=[randrange(20) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
-             for _ in range(20)]
+             for _ in range(5)]
     floor = LineObject((0, resolution[1]), resolution, static=True)
     # floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
     ceiling = LineObject((resolution[0], 0), (0, 0), static=True)

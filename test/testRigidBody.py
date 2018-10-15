@@ -6,7 +6,7 @@ from vector_2d import *
 from rigidBodies import RigidBody
 
 
-class TestPhysicalObject(unittest.TestCase):
+class TestRigidBody(unittest.TestCase):
     def test_init(self):
         po = RigidBody((50, 50))
         self.assertEqual(po.pos(), (50, 50))
