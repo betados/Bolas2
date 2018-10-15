@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     bolas = [Bola(color=[randrange(20) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
-             for _ in range(5)]
+             for _ in range(10)]
     floor = LineObject((0, resolution[1]), resolution)
     # floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
     ceiling = LineObject((resolution[0], 0), (0, 0))
@@ -36,7 +36,7 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
     # platform = LineObject((100, resolution[1]-200), (350, resolution[1]-200), static=True)
-    platform = Rect((50, 50, 5), (100, resolution[1] - 300, 500, 200))
+    platform = Rect((5, 10, 5), (100, resolution[1] - 300, 500, 200))
     box = (floor, ceiling, platform) + walls
     mouse = RoundBody((0, 0))
 
@@ -81,13 +81,10 @@ if __name__ == "__main__":
             for element in box:
                 # FIXME si va demasiado rápido atraviesa
                 Interaction.check_collision(bola1, element)
-                try:
-                    # FIXME todos debería tener metodo draw para no poner try
-                    element.draw(screen)
-                except AttributeError:
-                    pass
             for bola2 in bolas:
                 Interaction.check_collision(bola1, bola2)
+        platform.draw(screen)
+        platform.actualize(time)
 
         pygame.display.flip()
         reloj.tick(fps)

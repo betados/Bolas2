@@ -12,8 +12,12 @@ class RigidBody(object):
         self.__pos = Vector(*pos)
         self.__v = Vector()
         self.__a = Vector()
-        self.__forces = []
+        self._forces = []
+        self._omega = 0.009
+        self.__alpha = 0
         self.mass = mass
+        # Moment of inertia
+        self.moi = 9e9
         self.affected_by_gravity = affected_by_gravity
 
     @property
@@ -46,26 +50,24 @@ class RigidBody(object):
     def actualize(self, t):
         # FORCES
         if self.affected_by_gravity:
-            self.__forces.append(Vector(0, 0.09))
-        force = sum(self.__forces, Vector())
+            self._forces.append((Vector(0, 0), Vector(0, 0.09)))
+        force = sum((f[1] for f in self._forces), Vector())
         self.__a = force / self.mass
+        self.__alpha = sum(f[0] * f[1] for f in self._forces) / self.moi
 
         # KINETIC EQUATIONS
-        # self.__v += 0.5 * self.__a * t ** 2
         self.__v += self.__a * t
         self.__pos += self.__v * t
+        self._omega += self.__alpha * t
 
         # WIPE FORCES
-        self.__forces = []
+        self._forces = []
 
     def __eq__(self, other):
         return id(self) == id(other)
 
     def __ne__(self, other):
         return id(self) != id(other)
-
-    def append_force(self, force):
-        self.__forces.append(force)
 
 
 class RoundBody(RigidBody):
@@ -74,6 +76,9 @@ class RoundBody(RigidBody):
         RigidBody.__init__(self, pos, **kwargs)
         self.radio = radio
         self.k = 9
+
+    def append_force(self, force):
+        self._forces.append((Vector(), force))
 
 
 class LineObject(object):
@@ -89,16 +94,33 @@ class LineObject(object):
 class RectBody(RigidBody):
     def __init__(self, rect, **kwargs):
         # TODO the rect objects could have round ones on corners to improve bounces
-        points = [Vector(*rect[:2]), ]
-        points.append(points[-1] + Vector(rect[2], 0))
-        points.append(points[-1] + Vector(0, rect[3]))
-        points.append(points[-1] - Vector(rect[2], 0))
-        center = (points[0] + points[2]) / 2.0
-        RigidBody.__init__(self, center, **kwargs)
+        self.points = [Vector(*rect[:2]), ]
+        self.points.append(self.points[-1] + Vector(rect[2], 0))
+        self.points.append(self.points[-1] + Vector(0, rect[3]))
+        self.points.append(self.points[-1] - Vector(rect[2], 0))
+        self.pos = (self.points[0] + self.points[2]) / 2.0
+        RigidBody.__init__(self, self.pos, **kwargs)
 
-        self.rect = rect
+        # self._rect = rect
+        self.moi = 1000000 * self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12
+        self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
 
-        self.lines = [LineObject(points[i - 1], points[i]) for i in range(len(points))]
+    def append_force(self, r, f):
+        self._forces.append((r, f))
+
+    @property
+    def rect(self):
+        rect = list(self.points[0].get_comps())
+        rect.append(abs(self.points[0] - self.points[1]))
+        rect.append(abs(self.points[1] - self.points[2]))
+        print rect
+        return rect
+
+    def actualize(self, t):
+        RigidBody.actualize(self, t)
+        self.points = [point + self._omega * (point - self.pos).normal() * t for point in self.points]
+
+        print self.points
 
 
 class Interaction(object):
@@ -117,17 +139,21 @@ class Interaction(object):
 
             if isinstance(obj1, RoundBody) and isinstance(obj2, RectBody):
                 for line in obj2.lines:
-                    Interaction.manage_round_line_collision(obj1, line)
+                    overlap, normal = Interaction.manage_round_line_collision(obj1, line)
+                    if overlap and overlap > 0:
+                        distance = obj1.pos - obj2.pos - normal * obj1.radio
+                        obj2.append_force(distance, -normal * overlap * obj1.k)
 
     @staticmethod
-    def manage_round_line_collision(obj1, obj2):
-        overlap = obj1.radio - distance_point_segment(obj1.pos, obj2.points)
+    def manage_round_line_collision(round_obj, obj2):
+        overlap = round_obj.radio - distance_point_segment(round_obj.pos, obj2.points)
         if overlap > 0:
             normal = (obj2.points[0] - obj2.points[1]).normal()
-            obj1.append_force(
-                # FIXME ese menos no tiene por que se siempre menos. Calcular!!!!
-                # FIXME puede hacerse que solo una cara sea rebotante y esa dependa de orden de los puntos al crear
-                normal * overlap * obj1.k)
+            round_obj.append_force(
+                # FIXME solo una cara es rebotante y esa dependa de orden de los puntos al crear
+                normal * overlap * round_obj.k)
+            return overlap, normal
+        return None, None
 
     @staticmethod
     def is_clicked(obj, mouse):

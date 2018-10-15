@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pygame
+
 from rigidBodies import *
 
 
@@ -19,4 +20,11 @@ class Rect(RectBody):
         self.color = color
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        # print [[p.x, p.y] for p in self.points]
+        pygame.draw.polygon(screen,
+                            self.color,
+                            [[p.x, p.y] for p in self.points],
+                            )
+        # for p in self.points:
+        #     n = (p - self.pos).normal() * 30
+        #     pygame.draw.line(screen, (0, 255, 0), p.get_comps(), (p+n).get_comps(),)
