@@ -76,9 +76,8 @@ class RoundBody(RigidBody):
         self.k = 9
 
 
-class LineObject(RigidBody):
-    def __init__(self, p1, p2, **kwargs):
-        RigidBody.__init__(self, p1, **kwargs)
+class LineObject(object):
+    def __init__(self, p1, p2):
         self.__p1 = Vector(*p1)
         self.__p2 = Vector(*p2)
 
@@ -87,17 +86,19 @@ class LineObject(RigidBody):
         return self.__p1, self.__p2
 
 
-class RectBody(object):
-    def __init__(self, rect):
+class RectBody(RigidBody):
+    def __init__(self, rect, **kwargs):
         # TODO the rect objects could have round ones on corners to improve bounces
         points = [Vector(*rect[:2]), ]
         points.append(points[-1] + Vector(rect[2], 0))
         points.append(points[-1] + Vector(0, rect[3]))
         points.append(points[-1] - Vector(rect[2], 0))
+        center = (points[0] + points[2]) / 2.0
+        RigidBody.__init__(self, center, **kwargs)
 
         self.rect = rect
 
-        self.lines = [LineObject(points[i - 1], points[i], static=True) for i in range(len(points))]
+        self.lines = [LineObject(points[i - 1], points[i]) for i in range(len(points))]
 
 
 class Interaction(object):
