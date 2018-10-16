@@ -26,8 +26,9 @@ if __name__ == "__main__":
     count = 9999
 
     owned_bola = None
+    owned_platform = None
     bolas_number = 15
-    bolas = [Bola(color=[randrange(255) for _ in range(3)],
+    bolas = [Bola(color=[randrange(100) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
              for _ in range(bolas_number)]
     floor = LineObject((0, resolution[1]), resolution)
@@ -36,9 +37,11 @@ if __name__ == "__main__":
     walls = (LineObject((0, 0), (0, resolution[1])),
              LineObject(resolution, (resolution[0], 0)),
              )
-    # platform = LineObject((100, resolution[1]-200), (350, resolution[1]-200), static=True)
-    platform = Rect((10, 10, 10), (100, resolution[1] - 300, 600, 100))
-    box = (floor, ceiling, platform) + walls
+
+    platform1 = Rect((10, 10, 10), (100, resolution[1] - 300, 600, 100))
+    platform2 = Rect((10, 10, 10), (100, resolution[1] - 100, 600, 100))
+    platforms = [platform1, platform2]
+    box = (floor, ceiling) + walls
     mouse = RoundBody((0, 0))
 
     while not done:
@@ -59,10 +62,10 @@ if __name__ == "__main__":
         if pygame.mouse.get_pressed()[0]:
             if owned_bola:
                 owned_bola.v = mouse.v
-            if platform.click_point_on_platform:
-                platform.append_force(platform.click_point_on_platform - platform.pos,
-                                      mouse.pos - platform.click_point_on_platform)
-                p_list = [platform.pos, platform.click_point_on_platform, mouse.pos]
+            if owned_platform:
+                owned_platform.append_force(owned_platform.click_point_on_platform - owned_platform.pos,
+                                      mouse.pos - owned_platform.click_point_on_platform)
+                p_list = [owned_platform.pos, owned_platform.click_point_on_platform, mouse.pos]
                 pygame.draw.lines(screen, (0, 200, 0), False, [[p.x, p.y] for p in p_list])
 
         for event in events:
@@ -72,13 +75,16 @@ if __name__ == "__main__":
                 for bola in bolas:
                     if Interaction.is_clicked(bola, mouse):
                         owned_bola = bola
-
-                if Interaction.is_clicked(platform, mouse):
-                    platform.click_point_on_platform = mouse.pos
+                        break
+                for platform in platforms:
+                    if Interaction.is_clicked(platform, mouse):
+                        owned_platform = platform
+                        owned_platform.click_point_on_platform = mouse.pos
+                        break
 
             if event.type == pygame.MOUSEBUTTONUP:
                 owned_bola = None
-                platform.click_point_on_platform = None
+                owned_platform = None
 
             # if event.type == pygame.KEYDOWN and keys[pygame.K_c]:
             # if event.type == pygame.KEYDOWN and keys[pygame.K_s]:
@@ -93,10 +99,18 @@ if __name__ == "__main__":
             for element in box:
                 # FIXME si va demasiado rápido atraviesa
                 Interaction.check_collision(bola1, element)
+            for platform in platforms:
+                Interaction.check_collision(bola1, platform)
             for bola2 in bolas:
+                # TODO recorrer solo la mitad de las bolas y en la interacción aplicar fuerzas a las dos
                 Interaction.check_collision(bola1, bola2)
-        platform.draw(screen)
-        platform.actualize(time)
+
+        for platform_i in platforms:
+            for platform_j in platforms:
+                # TODO recorrer solo la mitad de las plataformas y en la interacción aplicar fuerzas a las dos
+                Interaction.check_collision(platform_i, platform_j)
+            platform_i.actualize(time)
+            platform_i.draw(screen)
 
         pygame.display.flip()
         reloj.tick(fps)
