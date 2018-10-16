@@ -18,6 +18,7 @@ if __name__ == "__main__":
     reloj = pygame.time.Clock()
 
     resolution = (1050, 600)
+    Interaction.set_screen_height(resolution[1])
     pygame.display.set_caption('Bolas')
     screen = pygame.display.set_mode(resolution, pygame.SRCALPHA, 32)
 
@@ -26,10 +27,14 @@ if __name__ == "__main__":
 
     owned_bola = None
     owned_platform = None
-    bolas_number = 1
-    bolas = [Bola(color=[randrange(30) for _ in range(3)],
-                  pos=(randrange(resolution[0]), randrange(resolution[1])))
-             for _ in range(bolas_number)]
+    bolas_number = 10
+    bolas = [
+        Bola(
+            color=[randrange(200) for _ in range(3)],
+            pos=(randrange(resolution[0]), randrange(resolution[1])),
+            radio=randrange(10, 30)
+        ) for _ in range(bolas_number)
+    ]
     floor = LineObject((0, resolution[1]), resolution)
     # floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
     ceiling = LineObject((resolution[0], 0), (0, 0))
@@ -37,9 +42,12 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
 
-    platform1 = Rect((10, 0, 0), (100, resolution[1] - 300, 600, 50))
+    platform1 = Rect((10, 0, 0), (100, resolution[1] - 300, 500, 40))
     platform2 = Rect((0, 10, 0), (100, resolution[1] - 100, 600, 50))
-    platforms = [platform1, platform2]
+    platforms = [
+        platform1,
+        # platform2,
+    ]
     box = (floor, ceiling) + walls
     mouse = RoundBody((0, 0))
 
@@ -58,7 +66,7 @@ if __name__ == "__main__":
                 owned_bola.v = mouse.v
             if owned_platform:
                 owned_platform.append_force(owned_platform.click_point_on_platform - owned_platform.pos,
-                                      mouse.pos - owned_platform.click_point_on_platform)
+                                            mouse.pos - owned_platform.click_point_on_platform)
                 p_list = [owned_platform.pos, owned_platform.click_point_on_platform, mouse.pos]
                 pygame.draw.lines(screen, (0, 200, 0), False, [[p.x, p.y] for p in p_list])
 

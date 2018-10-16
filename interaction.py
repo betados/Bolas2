@@ -18,6 +18,8 @@ def kronos(func):
 
 
 class Interaction(object):
+    screen_height = None
+
     @staticmethod
     def check_collision(obj1, obj2):
         if id(obj1) != id(obj2):
@@ -68,18 +70,21 @@ class Interaction(object):
     def is_inside_rect(rect, pos):
         return rect[0] < pos.x < rect[0] + rect[2] and rect[1] < pos.y < rect[1] + rect[3]
 
-    @staticmethod
+    @classmethod
+    def set_screen_height(cls, h):
+        cls.screen_height = h
+
+    @classmethod
     @kronos
-    def point_is_inside_closed_lines(point, lines_list):
+    def point_is_inside_closed_lines(cls, point, lines_list):
         """
             This function is slow. Use it carefully
         """
-        # FIXME no funciona perfecto todasl as veces
+        # FIXME no funciona perfecto todas las veces
         times = 0
-        # FIXME sería bueno saber el ancho de la pantalla para el range
-        for i in range(800):
+        for i in range(cls.screen_height - point.y):
             for line in lines_list:
-                if distance_point_segment(point + Vector(i, 0), line) < 1:
+                if distance_point_segment(point + Vector(0, i), line) < 1:
                     times += 1
         # print times
         # I divide it cause, when crossing each line, two points are at less than one of distance
