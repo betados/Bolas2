@@ -23,7 +23,7 @@ class Rect(RectBody):
         # print [[p.x, p.y] for p in self.points]
         pygame.draw.polygon(screen,
                             self.color,
-                            [[p.x, p.y] for p in self.points], 3
+                            [[p.x, p.y] for p in self.points], 0
                             )
         # TODO check witch is faster
         # for line in self.lines:
