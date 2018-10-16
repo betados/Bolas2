@@ -97,6 +97,9 @@ class LineObject(object):
     def __getitem__(self, item):
         return self.list[item]
 
+    def __iter__(self):
+        return iter(self.list)
+
 
 class RectBody(RigidBody):
     def __init__(self, rect, **kwargs):

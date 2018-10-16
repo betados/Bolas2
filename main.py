@@ -26,8 +26,8 @@ if __name__ == "__main__":
 
     owned_bola = None
     owned_platform = None
-    bolas_number = 15
-    bolas = [Bola(color=[randrange(100) for _ in range(3)],
+    bolas_number = 1
+    bolas = [Bola(color=[randrange(30) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
              for _ in range(bolas_number)]
     floor = LineObject((0, resolution[1]), resolution)
@@ -37,8 +37,8 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
 
-    platform1 = Rect((10, 10, 10), (100, resolution[1] - 300, 600, 100))
-    platform2 = Rect((10, 10, 10), (100, resolution[1] - 100, 600, 100))
+    platform1 = Rect((10, 0, 0), (100, resolution[1] - 300, 600, 50))
+    platform2 = Rect((0, 10, 0), (100, resolution[1] - 100, 600, 50))
     platforms = [platform1, platform2]
     box = (floor, ceiling) + walls
     mouse = RoundBody((0, 0))
