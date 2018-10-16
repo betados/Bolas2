@@ -81,10 +81,15 @@ class Interaction(object):
             This function is slow. Use it carefully
         """
         # FIXME no funciona perfecto todas las veces
+        if point.y > cls.screen_height / 2:
+            rango = (0, cls.screen_height - point.y, 1)
+        else:
+            rango = (0, -point.y, -1)
         times = 0
-        for i in range(cls.screen_height - point.y):
+        for i in range(*rango):
+            p = point + Vector(0, i)
             for line in lines_list:
-                if distance_point_segment(point + Vector(0, i), line) < 1:
+                if distance_point_segment(p, line) < 1:
                     times += 1
         # print times
         # I divide it cause, when crossing each line, two points are at less than one of distance

@@ -27,12 +27,12 @@ if __name__ == "__main__":
 
     owned_bola = None
     owned_platform = None
-    bolas_number = 10
+    bolas_number = 1
     bolas = [
         Bola(
-            color=[randrange(200) for _ in range(3)],
+            color=[randrange(100) for _ in range(3)],
             pos=(randrange(resolution[0]), randrange(resolution[1])),
-            radio=randrange(10, 30)
+            radio=randrange(10, 30),
         ) for _ in range(bolas_number)
     ]
     floor = LineObject((0, resolution[1]), resolution)
