@@ -25,10 +25,10 @@ if __name__ == "__main__":
     count = 9999
 
     owned_bola = None
-
-    bolas = [Bola(color=[randrange(20) for _ in range(3)],
+    bolas_number = 19
+    bolas = [Bola(color=[randrange(30) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
-             for _ in range(10)]
+             for _ in range(bolas_number)]
     floor = LineObject((0, resolution[1]), resolution)
     # floor = LineObject((0, resolution[1]), (resolution[0], resolution[1]-50), static=True)
     ceiling = LineObject((resolution[0], 0), (0, 0))
@@ -36,7 +36,7 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
     # platform = LineObject((100, resolution[1]-200), (350, resolution[1]-200), static=True)
-    platform = Rect((5, 10, 5), (100, resolution[1] - 300, 500, 200))
+    platform = Rect((5, 10, 5), (100, resolution[1] - 300, 600, 50))
     box = (floor, ceiling, platform) + walls
     mouse = RoundBody((0, 0))
 

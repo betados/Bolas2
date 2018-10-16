@@ -9,25 +9,28 @@ from vector_2d import *
 
 class RigidBody(object):
     def __init__(self, pos=(0, 0), affected_by_gravity=False, mass=10, static=False):
-        self.__pos = Vector(*pos)
+        self._pos = Vector(*pos)
         self.__v = Vector()
         self.__a = Vector()
         self._forces = []
-        self._omega = 0.009
-        self.__alpha = 0
+        self._omega = 0
+        self._alpha = 0
         self.mass = mass
         # Moment of inertia
         self.moi = 9e9
         self.affected_by_gravity = affected_by_gravity
 
+    def __repr__(self):
+        return type(self).__name__ + '{}'.format(self.pos())
+
     @property
     def pos(self):
-        return self.__pos
+        return self._pos
 
     @pos.setter
     def pos(self, value):
         assert isinstance(value, Vector), 'That value is not a Vector'
-        self.__pos = value
+        self._pos = value
 
     @property
     def v(self):
@@ -53,12 +56,12 @@ class RigidBody(object):
             self._forces.append((Vector(0, 0), Vector(0, 0.09)))
         force = sum((f[1] for f in self._forces), Vector())
         self.__a = force / self.mass
-        self.__alpha = sum(f[0] * f[1] for f in self._forces) / self.moi
+        self._alpha = sum(f[0] * f[1] for f in self._forces) / self.moi
 
         # KINETIC EQUATIONS
         self.__v += self.__a * t
-        self.__pos += self.__v * t
-        self._omega += self.__alpha * t
+        self._pos += self.__v * t
+        self._omega += self._alpha * t
 
         # WIPE FORCES
         self._forces = []
@@ -98,29 +101,33 @@ class RectBody(RigidBody):
         self.points.append(self.points[-1] + Vector(rect[2], 0))
         self.points.append(self.points[-1] + Vector(0, rect[3]))
         self.points.append(self.points[-1] - Vector(rect[2], 0))
-        self.pos = (self.points[0] + self.points[2]) / 2.0
-        RigidBody.__init__(self, self.pos, **kwargs)
-
-        # self._rect = rect
-        self.moi = 1000000 * self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12
+        kwargs['mass'] = rect[2] * rect[3] * 20
+        RigidBody.__init__(self, (0, 0), **kwargs)
+        self.calc_pos_from_points()
+        self._omega = 0.00
+        self.moi = self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12
         self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
 
     def append_force(self, r, f):
         self._forces.append((r, f))
+
+    def calc_pos_from_points(self):
+        self._pos = (self.points[0] + self.points[2]) / 2.0
 
     @property
     def rect(self):
         rect = list(self.points[0].get_comps())
         rect.append(abs(self.points[0] - self.points[1]))
         rect.append(abs(self.points[1] - self.points[2]))
-        print rect
         return rect
 
     def actualize(self, t):
         RigidBody.actualize(self, t)
-        self.points = [point + self._omega * (point - self.pos).normal() * t for point in self.points]
-
-        print self.points
+        print abs(self.v)
+        self.points = [point + (self._omega * (point - self._pos).normal() + self.v) * t for point in self.points]
+        # self.points = [point + self._omega * (point - self._pos).normal() * t for point in self.points]
+        self.calc_pos_from_points()
+        self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
 
 
 class Interaction(object):
@@ -140,8 +147,12 @@ class Interaction(object):
             if isinstance(obj1, RoundBody) and isinstance(obj2, RectBody):
                 for line in obj2.lines:
                     overlap, normal = Interaction.manage_round_line_collision(obj1, line)
+                    #
+                    #
                     if overlap and overlap > 0:
-                        distance = obj1.pos - obj2.pos - normal * obj1.radio
+                        distance = obj1.pos - obj2.pos - normal * (obj1.radio - overlap)
+                        # print obj2.pos
+                        # FIXME aquí la distancia se queda trambolika
                         obj2.append_force(distance, -normal * overlap * obj1.k)
 
     @staticmethod

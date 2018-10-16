@@ -7,7 +7,7 @@ from rigidBodies import *
 
 class Bola(RoundBody):
     def __init__(self, color, pos=None, radio=15):
-        RoundBody.__init__(self, pos, radio, affected_by_gravity=True)
+        RoundBody.__init__(self, pos, radio, affected_by_gravity=False)
         self.color = color
 
     def draw(self, screen):
@@ -28,3 +28,4 @@ class Rect(RectBody):
         # for p in self.points:
         #     n = (p - self.pos).normal() * 30
         #     pygame.draw.line(screen, (0, 255, 0), p.get_comps(), (p+n).get_comps(),)
+
