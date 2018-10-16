@@ -7,7 +7,8 @@ import pygame
 from vector_2d import Vector
 
 from objects import Bola, Rect
-from rigidBodies import Interaction, LineObject, RoundBody
+from rigidBodies import LineObject, RoundBody
+from interaction import Interaction
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
@@ -25,8 +26,8 @@ if __name__ == "__main__":
     count = 9999
 
     owned_bola = None
-    bolas_number = 1
-    bolas = [Bola(color=[randrange(30) for _ in range(3)],
+    bolas_number = 15
+    bolas = [Bola(color=[randrange(255) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
              for _ in range(bolas_number)]
     floor = LineObject((0, resolution[1]), resolution)
