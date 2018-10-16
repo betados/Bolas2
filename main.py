@@ -25,7 +25,7 @@ if __name__ == "__main__":
     count = 9999
 
     owned_bola = None
-    bolas_number = 19
+    bolas_number = 1
     bolas = [Bola(color=[randrange(30) for _ in range(3)],
                   pos=(randrange(resolution[0]), randrange(resolution[1])))
              for _ in range(bolas_number)]
@@ -36,7 +36,7 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
     # platform = LineObject((100, resolution[1]-200), (350, resolution[1]-200), static=True)
-    platform = Rect((5, 10, 5), (100, resolution[1] - 300, 600, 50))
+    platform = Rect((10, 10, 10), (100, resolution[1] - 300, 600, 100))
     box = (floor, ceiling, platform) + walls
     mouse = RoundBody((0, 0))
 
@@ -55,8 +55,14 @@ if __name__ == "__main__":
         if time:
             mouse.v = Vector(*pygame.mouse.get_rel()) / time
         mouse.pos = Vector(*pygame.mouse.get_pos())
-        if pygame.mouse.get_pressed()[0] and owned_bola:
-            owned_bola.v = mouse.v
+        if pygame.mouse.get_pressed()[0]:
+            if owned_bola:
+                owned_bola.v = mouse.v
+            if platform.click_point_on_platform:
+                platform.append_force(platform.click_point_on_platform - platform.pos,
+                                      mouse.pos - platform.click_point_on_platform)
+                p_list = [platform.pos, platform.click_point_on_platform, mouse.pos]
+                pygame.draw.lines(screen, (0, 200, 0), False, [[p.x, p.y] for p in p_list])
 
         for event in events:
             if event.type == pygame.QUIT:
@@ -65,8 +71,13 @@ if __name__ == "__main__":
                 for bola in bolas:
                     if Interaction.is_clicked(bola, mouse):
                         owned_bola = bola
+
+                if Interaction.is_clicked(platform, mouse):
+                    platform.click_point_on_platform = mouse.pos
+
             if event.type == pygame.MOUSEBUTTONUP:
                 owned_bola = None
+                platform.click_point_on_platform = None
 
             # if event.type == pygame.KEYDOWN and keys[pygame.K_c]:
             # if event.type == pygame.KEYDOWN and keys[pygame.K_s]:

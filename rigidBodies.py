@@ -88,10 +88,14 @@ class LineObject(object):
     def __init__(self, p1, p2):
         self.__p1 = Vector(*p1)
         self.__p2 = Vector(*p2)
+        self.list = [self.__p1, self.__p2]
 
     @property
     def points(self):
         return self.__p1, self.__p2
+
+    def __getitem__(self, item):
+        return self.list[item]
 
 
 class RectBody(RigidBody):
@@ -107,25 +111,22 @@ class RectBody(RigidBody):
         self._omega = 0.00
         self.moi = self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12
         self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
+        self.click_point_on_platform = None
 
     def append_force(self, r, f):
+        assert isinstance(r, Vector) and isinstance(f, Vector), 'Esas fuerzas no son vectores'
         self._forces.append((r, f))
 
     def calc_pos_from_points(self):
         self._pos = (self.points[0] + self.points[2]) / 2.0
 
-    @property
-    def rect(self):
-        rect = list(self.points[0].get_comps())
-        rect.append(abs(self.points[0] - self.points[1]))
-        rect.append(abs(self.points[1] - self.points[2]))
-        return rect
-
     def actualize(self, t):
         RigidBody.actualize(self, t)
-        print abs(self.v)
-        self.points = [point + (self._omega * (point - self._pos).normal() + self.v) * t for point in self.points]
-        # self.points = [point + self._omega * (point - self._pos).normal() * t for point in self.points]
+        # print self._omega
+        self.points = [point + (self._omega * abs(point - self._pos) * (point - self._pos).normal() + self.v) * t for point in self.points]
+        if self.click_point_on_platform:
+            self.click_point_on_platform += (self._omega * abs(self.click_point_on_platform - self._pos) *
+                                             (self.click_point_on_platform - self._pos).normal() + self.v) * t
         self.calc_pos_from_points()
         self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
 
@@ -147,12 +148,8 @@ class Interaction(object):
             if isinstance(obj1, RoundBody) and isinstance(obj2, RectBody):
                 for line in obj2.lines:
                     overlap, normal = Interaction.manage_round_line_collision(obj1, line)
-                    #
-                    #
                     if overlap and overlap > 0:
                         distance = obj1.pos - obj2.pos - normal * (obj1.radio - overlap)
-                        # print obj2.pos
-                        # FIXME aquí la distancia se queda trambolika
                         obj2.append_force(distance, -normal * overlap * obj1.k)
 
     @staticmethod
@@ -168,4 +165,28 @@ class Interaction(object):
 
     @staticmethod
     def is_clicked(obj, mouse):
-        return abs(obj.pos - mouse.pos) <= obj.radio
+        if isinstance(obj, RoundBody):
+            return abs(obj.pos - mouse.pos) <= obj.radio
+
+        if isinstance(obj, RectBody):
+            return Interaction.is_inside_closed_lines(obj.lines, mouse.pos)
+
+    @staticmethod
+    def is_inside_rect(rect, pos):
+        return rect[0] < pos.x < rect[0] + rect[2] and rect[1] < pos.y < rect[1] + rect[3]
+
+    @staticmethod
+    def is_inside_closed_lines(lines_list, pos):
+        # FIXME no funciona perfecto todasl as veces
+        times = 0
+        # FIXME sería bueno saber el ancho de la pantalla para el range
+        for i in range(999):
+            for line in lines_list:
+                if distance_point_segment(pos + Vector(i, 0), line) < 1:
+                    times += 1
+        # print times
+        # I divide it cause each line crossing two points are at less than one of distance
+        if (times/2) % 2 != 0:
+            return True
+        else:
+            return False
