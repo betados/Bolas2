@@ -23,7 +23,6 @@ if __name__ == "__main__":
 
     done = False
     fps = 120
-    count = 9999
 
     owned_bola = None
     owned_platform = None
@@ -50,11 +49,6 @@ if __name__ == "__main__":
 
         events = pygame.event.get()
         keys = pygame.key.get_pressed()
-
-        # count += 1
-        # Once a minute:
-        # if count > fps * 20:
-        #     count = 0
 
         if time:
             mouse.v = Vector(*pygame.mouse.get_rel()) / time
