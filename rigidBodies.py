@@ -111,7 +111,7 @@ class RectBody(RigidBody):
         kwargs['mass'] = rect[2] * rect[3] * 20
         RigidBody.__init__(self, (0, 0), **kwargs)
         self.calc_pos_from_points()
-        self._omega = 0.00
+        self._omega = 0.00005
         self.moi = self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12
         self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
         self.click_point_on_platform = None
@@ -125,11 +125,11 @@ class RectBody(RigidBody):
 
     def actualize(self, t):
         RigidBody.actualize(self, t)
-        # print self._omega
-        self.points = [point + (self._omega * abs(point - self._pos) * (point - self._pos).normal() + self.v) * t for
+        # FIXME cuando gira muy rápido crece, creo que por errores de redondeo
+        self.points = [point + (self._omega * (point - self._pos).normal(False) + self.v) * t for
                        point in self.points]
         if self.click_point_on_platform:
-            self.click_point_on_platform += (self._omega * abs(self.click_point_on_platform - self._pos) *
-                                             (self.click_point_on_platform - self._pos).normal() + self.v) * t
+            self.click_point_on_platform += (self._omega *
+                                             (self.click_point_on_platform - self._pos).normal(False) + self.v) * t
         self.calc_pos_from_points()
         self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
