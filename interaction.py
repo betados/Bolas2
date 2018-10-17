@@ -43,13 +43,13 @@ class Interaction(object):
 
             if isinstance(obj1, RectBody) and isinstance(obj2, RectBody):
                 for point in obj1.points:
-                    overlap = min([distance_point_segment(point, line) for line in obj2.lines])
+                    overlap = min([Vector.distance_point_segment(point, line) for line in obj2.lines])
                     if overlap < 2:
                         print 'RECT COLLISION'
 
     @staticmethod
     def manage_round_line_collision(round_obj, obj2):
-        overlap = round_obj.radio - distance_point_segment(round_obj.pos, obj2.points)
+        overlap = round_obj.radio - Vector.distance_point_segment(round_obj.pos, obj2.points)
         if overlap > 0:
             normal = (obj2.points[0] - obj2.points[1]).normal()
             round_obj.append_force(
@@ -89,7 +89,7 @@ class Interaction(object):
         for i in range(*rango):
             p = point + Vector(0, i)
             for line in lines_list:
-                if distance_point_segment(p, line) < 1:
+                if Vector.distance_point_segment(p, line) < 1:
                     times += 1
         # print times
         # I divide it cause, when crossing each line, two points are at less than one of distance

@@ -5,19 +5,21 @@ from __future__ import division
 from math import pi
 
 from vector_2d import *
+from decimal import Decimal
 
 
 class RigidBody(object):
-    def __init__(self, pos=(0, 0), affected_by_gravity=False, mass=10, static=False):
+    def __init__(self, pos=(0, 0), affected_by_gravity=False, mass=Decimal(10), static=False):
+        Vector.use_decimal()
         self._pos = Vector(*pos)
         self.__v = Vector()
         self.__a = Vector()
         self._forces = []
-        self._omega = 0
-        self._alpha = 0
+        self._omega = Decimal(0)
+        self._alpha = Decimal(0)
         self.mass = mass
         # Moment of inertia
-        self.moi = 9e9
+        self.moi = Decimal(9e9)
         self.affected_by_gravity = affected_by_gravity
 
     def __repr__(self):
@@ -56,7 +58,7 @@ class RigidBody(object):
             self._forces.append((Vector(0, 0), Vector(0, 0.09)))
         force = sum((f[1] for f in self._forces), Vector())
         self.__a = force / self.mass
-        self._alpha = sum(f[0] * f[1] for f in self._forces) / self.moi
+        self._alpha = Decimal(sum(f[0] * f[1] for f in self._forces) / self.moi)
 
         # KINETIC EQUATIONS
         self.__v += self.__a * t
@@ -75,10 +77,11 @@ class RigidBody(object):
 
 class RoundBody(RigidBody):
     def __init__(self, pos, radio=0, **kwargs):
-        kwargs['mass'] = (4 / 3.0) * pi * radio ** 3
+        Vector.use_decimal()
+        kwargs['mass'] = Decimal((4 / 3.0) * pi * radio ** 3)
         RigidBody.__init__(self, pos, **kwargs)
-        self.radio = radio
-        self.k = 9
+        self.radio = Decimal(radio)
+        self.k = Decimal(9)
 
     def append_force(self, force):
         self._forces.append((Vector(), force))
@@ -86,6 +89,7 @@ class RoundBody(RigidBody):
 
 class LineObject(object):
     def __init__(self, p1, p2):
+        Vector.use_decimal()
         self.__p1 = Vector(*p1)
         self.__p2 = Vector(*p2)
         self.list = [self.__p1, self.__p2]
@@ -104,15 +108,16 @@ class LineObject(object):
 class RectBody(RigidBody):
     def __init__(self, rect, **kwargs):
         # TODO the rect objects could have round ones on corners to improve bounces
+        Vector.use_decimal()
         self.points = [Vector(*rect[:2]), ]
         self.points.append(self.points[-1] + Vector(rect[2], 0))
         self.points.append(self.points[-1] + Vector(0, rect[3]))
         self.points.append(self.points[-1] - Vector(rect[2], 0))
-        kwargs['mass'] = rect[2] * rect[3] * 20
+        kwargs['mass'] = Decimal(rect[2] * rect[3] * 20)
         RigidBody.__init__(self, (0, 0), **kwargs)
         self.calc_pos_from_points()
-        self._omega = 0.00005
-        self.moi = self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12
+        self._omega = Decimal(0.00055)
+        self.moi = Decimal(self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12)
         self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
         self.click_point_on_platform = None
 

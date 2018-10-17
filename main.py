@@ -9,6 +9,7 @@ from vector_2d import Vector
 from objects import Bola, Rect
 from rigidBodies import LineObject, RoundBody
 from interaction import Interaction
+from decimal import Decimal
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
@@ -17,7 +18,7 @@ if __name__ == "__main__":
     pygame.init()
     reloj = pygame.time.Clock()
 
-    resolution = (1050, 600)
+    resolution = (Decimal(1050), Decimal(600))
     Interaction.set_screen_height(resolution[1])
     pygame.display.set_caption('Bolas')
     screen = pygame.display.set_mode(resolution, pygame.SRCALPHA, 32)
@@ -27,7 +28,7 @@ if __name__ == "__main__":
 
     owned_bola = None
     owned_platform = None
-    bolas_number = 1
+    bolas_number = 5
     bolas = [
         Bola(
             color=[randrange(100) for _ in range(3)],
@@ -42,7 +43,7 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
 
-    platform1 = Rect((10, 0, 0), (100, resolution[1] - 300, 500, 40))
+    platform1 = Rect((100, 0, 0), (300, resolution[1] - 300, 600, 60))
     platform2 = Rect((0, 10, 0), (100, resolution[1] - 100, 600, 50))
     platforms = [
         platform1,
@@ -53,7 +54,7 @@ if __name__ == "__main__":
 
     while not done:
         screen.fill((0, 0, 0, 255))
-        time = reloj.get_time()
+        time = Decimal(reloj.get_time())
 
         events = pygame.event.get()
         keys = pygame.key.get_pressed()
