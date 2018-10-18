@@ -23,16 +23,18 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode(resolution, pygame.SRCALPHA, 32)
 
     done = False
-    fps = 120
+    fps = 200
+    fps_draw = 50
+    acum_time = 0
 
     owned_bola = None
     owned_platform = None
-    bolas_number = 1
+    bolas_number = 25
     bolas = [
         Bola(
-            color=[randrange(100) for _ in range(3)],
+            color=[randrange(255) for _ in range(3)],
             pos=(randrange(resolution[0]), randrange(resolution[1])),
-            radio=randrange(10, 30),
+            radio=randrange(10, 25),
         ) for _ in range(bolas_number)
     ]
     floor = LineObject((0, resolution[1]), resolution)
@@ -42,7 +44,7 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
 
-    platform1 = Rect((10, 0, 0), (100, resolution[1] - 300, 500, 40))
+    platform1 = Rect((200, 0, 0), (100, resolution[1] - 300, 500, 40))
     platform2 = Rect((0, 10, 0), (100, resolution[1] - 100, 600, 50))
     platforms = [
         platform1,
@@ -54,6 +56,13 @@ if __name__ == "__main__":
     while not done:
         screen.fill((0, 0, 0, 255))
         time = reloj.get_time()
+
+        acum_time += time
+        if acum_time >= 1000/fps_draw:
+            drawable = True
+            acum_time = 0
+        else:
+            drawable = False
 
         events = pygame.event.get()
         keys = pygame.key.get_pressed()
@@ -68,7 +77,8 @@ if __name__ == "__main__":
                 owned_platform.append_force(owned_platform.click_point_on_platform - owned_platform.pos,
                                             mouse.pos - owned_platform.click_point_on_platform)
                 p_list = [owned_platform.pos, owned_platform.click_point_on_platform, mouse.pos]
-                pygame.draw.lines(screen, (0, 200, 0), False, [[p.x, p.y] for p in p_list])
+                if drawable:
+                    pygame.draw.lines(screen, (0, 200, 0), False, [[p.x, p.y] for p in p_list])
 
         for event in events:
             if event.type == pygame.QUIT:
@@ -96,7 +106,8 @@ if __name__ == "__main__":
             done = True
 
         for bola1 in bolas:
-            bola1.draw(screen)
+            if drawable:
+                bola1.draw(screen)
             bola1.actualize(time)
             for element in box:
                 # FIXME si va demasiado rápido atraviesa
@@ -112,10 +123,16 @@ if __name__ == "__main__":
                 # TODO recorrer solo la mitad de las plataformas y en la interacción aplicar fuerzas a las dos
                 Interaction.check_collision(platform_i, platform_j)
             platform_i.actualize(time)
-            platform_i.draw(screen)
+            if drawable:
+                platform_i.draw(screen)
 
-        pygame.display.flip()
+        if drawable:
+            pygame.display.flip()
         reloj.tick(fps)
+        try:
+            print time, 1000 / float(time)
+        except:
+            pass
 
     # Cerramos la ventana y salimos.
     # Si te olvidas de esta ultima linea, el programa se 'colgara'

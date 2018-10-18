@@ -111,7 +111,7 @@ class RectBody(RigidBody):
         kwargs['mass'] = rect[2] * rect[3] * 20
         RigidBody.__init__(self, (0, 0), **kwargs)
         self.calc_pos_from_points()
-        self._omega = 0.00005
+        self._omega = 0.00000
         self.moi = self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12
         self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
         self.click_point_on_platform = None
