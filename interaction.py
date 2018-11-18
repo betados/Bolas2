@@ -11,7 +11,7 @@ def kronos(func):
     def wrapper(*args, **kwargs):
         t = time.time()
         result = func(*args, **kwargs)
-        print 'Execution time of ' + func.__module__ + '.' + func.__name__ + ': ', time.time() - t
+        print('Execution time of ' + func.__module__ + '.' + func.__name__ + ': ', time.time() - t)
         return result
 
     return wrapper
@@ -45,7 +45,7 @@ class Interaction(object):
                 for point in obj1.points:
                     overlap = min([distance_point_segment(point, line) for line in obj2.lines])
                     if overlap < 2:
-                        print 'RECT COLLISION'
+                        print('RECT COLLISION')
 
     @staticmethod
     def manage_round_line_collision(round_obj, obj2):

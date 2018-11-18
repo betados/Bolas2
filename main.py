@@ -130,7 +130,7 @@ if __name__ == "__main__":
             pygame.display.flip()
         reloj.tick(fps)
         try:
-            print time, 1000 / float(time)
+            print(time, 1000 / float(time))
         except:
             pass
 
