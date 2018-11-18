@@ -129,10 +129,10 @@ if __name__ == "__main__":
         if drawable:
             pygame.display.flip()
         reloj.tick(fps)
-        try:
-            print(time, 1000 / float(time))
-        except:
-            pass
+        # try:
+        #     print(time, 1000 / float(time))
+        # except:
+        #     pass
 
     # Cerramos la ventana y salimos.
     # Si te olvidas de esta ultima linea, el programa se 'colgara'
