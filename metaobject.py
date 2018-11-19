@@ -9,6 +9,7 @@ class Metaobject(RigidBody):
         pos = sum([obj._pos * obj.mass for obj in self], Vector()) / mass
         # TODO calc moment of inertia
         RigidBody.__init__(self, pos(), mass=mass)
+        self.moi = 9999
 
     def __iter__(self):
         return iter(self._list)
@@ -20,6 +21,7 @@ class Metaobject(RigidBody):
         RigidBody.actualize(self, time)
         for obj in self:
             obj.v = self.v
+            obj._omega = self._omega
             obj.actualize(time)
 
 

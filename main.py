@@ -121,10 +121,15 @@ if __name__ == "__main__":
             for bola2 in bolas:
                 # TODO recorrer solo la mitad de las bolas y en la interacción aplicar fuerzas a las dos
                 Interaction.check_collision(bola1, bola2)
+
+            # TODO comprobarlo solo una vez y aplicar la fuerza en los dos
             Interaction.check_collision(bola1, car)
+            Interaction.check_collision(car, bola1)
 
         for platform_i in platforms:
+            # TODO comprobarlo solo una vez y aplicar la fuerza en los dos
             Interaction.check_collision(platform_i, car)
+            Interaction.check_collision(car, platform_i)
             for platform_j in platforms:
                 # TODO recorrer solo la mitad de las plataformas y en la interacción aplicar fuerzas a las dos
                 Interaction.check_collision(platform_i, platform_j)
