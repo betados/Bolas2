@@ -48,7 +48,7 @@ class Interaction(object):
                     if overlap < 2:
                         print('RECT COLLISION')
 
-            if isinstance(obj1, RoundBody) and isinstance(obj2, Metaobject):
+            if isinstance(obj1, (RoundBody, RectBody)) and isinstance(obj2, Metaobject):
                 for obj in obj2:
                     Interaction.check_collision(obj, obj1)
                 return
