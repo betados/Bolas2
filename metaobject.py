@@ -13,6 +13,15 @@ class Metaobject(RigidBody):
     def __iter__(self):
         return iter(self._list)
 
+    def actualize(self, time):
+        for obj in self:
+            self._forces += obj._forces
+            obj._forces = []
+        RigidBody.actualize(self, time)
+        for obj in self:
+            obj.v = self.v
+            obj.actualize(time)
+
 
 class Car(Metaobject):
     def __init__(self, pos):
@@ -34,13 +43,3 @@ class Car(Metaobject):
         # wheels
         pygame.draw.circle(screen, (255, 20, 20), self.wheel.pos.int(), self.wheel.radio)
         pygame.draw.circle(screen, (20, 20, 20), self.wheel2.pos.int(), self.wheel2.radio)
-        # print self.wheel._forces
-
-    def actualize(self, time):
-        for obj in self:
-            self._forces += obj._forces
-            obj._forces = []
-        RigidBody.actualize(self, time)
-        for obj in self:
-            obj.v = self.v
-            obj.actualize(time)
