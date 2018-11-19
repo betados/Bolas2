@@ -20,7 +20,6 @@ class Rect(RectBody):
         self.color = color
 
     def draw(self, screen):
-        # print [[p.x, p.y] for p in self.points]
         pygame.draw.polygon(screen,
                             self.color,
                             [[p.x + self._pos.x, p.y + self._pos.y] for p in self.points], 0

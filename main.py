@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     owned_bola = None
     owned_platform = None
-    bolas_number = 25
+    bolas_number = 3
     bolas = [
         Bola(
             color=[randrange(255) for _ in range(3)],
@@ -44,8 +44,8 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
 
-    platform1 = Rect((200, 0, 0), (100, resolution[1] - 300, 500, 40))
-    platform2 = Rect((0, 10, 0), (100, resolution[1] - 100, 600, 50))
+    platform1 = Rect((255, 0, 0), (100, 300, 500, 40))
+    # platform2 = Rect((0, 10, 0), (100, resolution[1] - 100, 600, 50))
     platforms = [
         platform1,
         # platform2,

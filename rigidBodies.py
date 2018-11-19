@@ -104,17 +104,18 @@ class LineObject(object):
 class RectBody(RigidBody):
     def __init__(self, rect, **kwargs):
         # TODO the rect objects could have round ones on corners to improve bounces
-        #  FIXME porque se inicializa en 0, 0????????????
         self.points = [Vector(*rect[:2]), ]
         self.points.append(self.points[-1] + Vector(rect[2], 0))
         self.points.append(self.points[-1] + Vector(0, rect[3]))
         self.points.append(self.points[-1] - Vector(rect[2], 0))
-        self.lines = [LineObject(self.points[i - 1], self.points[i]) for i in range(len(self.points))]
-        self.calc_pos_from_points()
-        self._diagonal = abs(self.points[0] - self._pos)
-        self.points = [point - self._pos for point in self.points]
+        pos = (self.points[0] + self.points[2]) / 2.0
+        self.lines = [LineObject(self.points[i - 1] + pos, self.points[i] + pos) for i in
+                      range(len(self.points))]
+        self._diagonal = abs(self.points[0] - pos)
+        self.points = [point - pos for point in self.points]
+        print(self.points)
         kwargs['mass'] = rect[2] * rect[3] * 20
-        RigidBody.__init__(self, (0, 0), **kwargs)
+        RigidBody.__init__(self, pos, **kwargs)
 
         self._omega = 0.00000
         self.moi = self.mass * (rect[2] ** 2 + rect[3] ** 2) / 12
@@ -124,9 +125,6 @@ class RectBody(RigidBody):
         assert isinstance(r, Vector) and isinstance(f, Vector), 'Esas fuerzas no son vectores'
         self._forces.append((r, f))
 
-    def calc_pos_from_points(self):
-        self._pos = (self.points[0] + self.points[2]) / 2.0
-
     def actualize(self, t):
         RigidBody.actualize(self, t)
         self.points = [point + point.normal(False) * self._omega * t for point in self.points]
@@ -134,4 +132,5 @@ class RectBody(RigidBody):
         if self.click_point_on_platform:
             self.click_point_on_platform += (self._omega *
                                              (self.click_point_on_platform - self._pos).normal(False) + self.v) * t
-        self.lines = [LineObject(self.points[i - 1] + self._pos, self.points[i] + self._pos) for i in range(len(self.points))]
+        self.lines = [LineObject(self.points[i - 1] + self._pos, self.points[i] + self._pos) for i in
+                      range(len(self.points))]
