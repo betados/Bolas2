@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from rigidBodies import Interaction, RoundBody
+from rigidBodies import RoundBody
+from interaction import Interaction
 
 from objects import Bola
 
