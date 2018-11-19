@@ -33,7 +33,9 @@ class Interaction(object):
                 if overlap > 0:
                     obj1.append_force((obj1.pos - obj2.pos).unit() * overlap * obj1.k)
                     return
-
+            if isinstance(obj2, RoundBody) and isinstance(obj1, RectBody):
+                Interaction.check_collision(obj2, obj1)
+                return
             if isinstance(obj1, RoundBody) and isinstance(obj2, RectBody):
                 for line in obj2.lines:
                     overlap, normal = Interaction.manage_round_line_collision(obj1, line)
@@ -44,11 +46,14 @@ class Interaction(object):
 
             if isinstance(obj1, RectBody) and isinstance(obj2, RectBody):
                 for point in obj1.points:
-                    overlap = min([distance_point_segment(point, line) for line in obj2.lines])
+                    overlap = min([distance_point_segment(point + obj1.pos, line) for line in obj2.lines])
                     if overlap < 2:
+                        # TODO implementar
                         print('RECT COLLISION')
+                return
 
-            if isinstance(obj1, (RoundBody, RectBody)) and isinstance(obj2, Metaobject):
+            # if isinstance(obj1, (RoundBody, RectBody)) and isinstance(obj2, Metaobject):
+            if isinstance(obj2, Metaobject):
                 for obj in obj2:
                     Interaction.check_collision(obj, obj1)
                 return
