@@ -5,7 +5,7 @@ from rigidBodies import *
 class Metaobject(RigidBody):
     def __init__(self, *args):
         self._list = args
-        mass = sum([obj.mass for obj in self])
+        mass = sum([obj.mass for obj in self]) * 10
         pos = sum([obj._pos * obj.mass for obj in self], Vector()) / mass
         # TODO calc moment of inertia
         RigidBody.__init__(self, pos(), mass=mass)
@@ -38,6 +38,7 @@ class Car(Metaobject):
         pos_ant = self._pos
         for obj in self:
             self._forces += obj._forces
+            obj._forces = []
         RigidBody.actualize(self, time)
         dif = self._pos - pos_ant
         for obj in self:
