@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from rigidBodies import *
+from metaobject import Metaobject
 import time
 
 
@@ -46,6 +47,11 @@ class Interaction(object):
                     overlap = min([distance_point_segment(point, line) for line in obj2.lines])
                     if overlap < 2:
                         print('RECT COLLISION')
+
+            if isinstance(obj1, RoundBody) and isinstance(obj2, Metaobject):
+                for obj in obj2:
+                    Interaction.check_collision(obj, obj1)
+                return
 
     @staticmethod
     def manage_round_line_collision(round_obj, obj2):

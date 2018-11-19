@@ -9,6 +9,8 @@ from vector_2d import Vector
 from objects import Bola, Rect
 from rigidBodies import LineObject, RoundBody
 from interaction import Interaction
+from metaobject import Car
+import time
 
 if __name__ == "__main__":
     if sys.platform == 'win32' or sys.platform == 'win64':
@@ -29,10 +31,10 @@ if __name__ == "__main__":
 
     owned_bola = None
     owned_platform = None
-    bolas_number = 3
+    bolas_number = 1
     bolas = [
         Bola(
-            color=[randrange(255) for _ in range(3)],
+            color=[randrange(100) for _ in range(3)],
             pos=(randrange(resolution[0]), randrange(resolution[1])),
             radio=randrange(10, 25),
         ) for _ in range(bolas_number)
@@ -44,15 +46,17 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
 
-    platform1 = Rect((255, 0, 0), (100, 300, 500, 40))
+    platform1 = Rect((50, 0, 0), (100, 300, 500, 40))
     # platform2 = Rect((0, 10, 0), (100, resolution[1] - 100, 600, 50))
     platforms = [
         platform1,
         # platform2,
     ]
+    car = Car((150, 250))
     box = (floor, ceiling) + walls
     mouse = RoundBody((0, 0))
 
+    time.sleep(1)
     while not done:
         screen.fill((0, 0, 0, 255))
         time = reloj.get_time()
@@ -117,8 +121,10 @@ if __name__ == "__main__":
             for bola2 in bolas:
                 # TODO recorrer solo la mitad de las bolas y en la interacción aplicar fuerzas a las dos
                 Interaction.check_collision(bola1, bola2)
+            Interaction.check_collision(bola1, car)
 
         for platform_i in platforms:
+            Interaction.check_collision(platform_i, car)
             for platform_j in platforms:
                 # TODO recorrer solo la mitad de las plataformas y en la interacción aplicar fuerzas a las dos
                 Interaction.check_collision(platform_i, platform_j)
@@ -127,6 +133,8 @@ if __name__ == "__main__":
                 platform_i.draw(screen)
 
         if drawable:
+            car.draw(screen)
+            car.actualize(time)
             pygame.display.flip()
         reloj.tick(fps)
         # try:

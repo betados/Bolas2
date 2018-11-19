@@ -53,7 +53,7 @@ class RigidBody(object):
     def actualize(self, t):
         # FORCES
         if self.affected_by_gravity:
-            self._forces.append((Vector(0, 0), Vector(0, 0.09)))
+            self._forces.append((Vector(0, 0), Vector(0, 0.009)))
         force = sum((f[1] for f in self._forces), Vector())
         self.__a = force / self.mass
         self._alpha = sum(f[0] * f[1] for f in self._forces) / self.moi
@@ -113,7 +113,6 @@ class RectBody(RigidBody):
                       range(len(self.points))]
         self._diagonal = abs(self.points[0] - pos)
         self.points = [point - pos for point in self.points]
-        print(self.points)
         kwargs['mass'] = rect[2] * rect[3] * 20
         RigidBody.__init__(self, pos, **kwargs)
 
