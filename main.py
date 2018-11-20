@@ -98,6 +98,10 @@ if __name__ == "__main__":
                         owned_platform.click_point_on_platform = mouse.pos
                         break
 
+                if Interaction.is_clicked(car.frame, mouse):
+                    owned_platform = car.frame
+                    owned_platform.click_point_on_platform = mouse.pos
+
             if event.type == pygame.MOUSEBUTTONUP:
                 owned_bola = None
                 owned_platform = None
