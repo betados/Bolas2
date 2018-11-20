@@ -46,13 +46,13 @@ if __name__ == "__main__":
              LineObject(resolution, (resolution[0], 0)),
              )
 
-    platform1 = Rect((50, 0, 0), (100, 300, 500, 40))
+    platform1 = Rect((50, 0, 0), (100, 400, 500, 40))
     # platform2 = Rect((0, 10, 0), (100, resolution[1] - 100, 600, 50))
     platforms = [
         platform1,
         # platform2,
     ]
-    car = Car((50, 50))
+    car = Car((400, 200))
     box = (floor, ceiling) + walls
     mouse = RoundBody((0, 0))
 

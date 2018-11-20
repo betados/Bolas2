@@ -10,11 +10,12 @@ class Metabody(RigidBody):
         self._bodies = args
 
         mass = sum([obj.mass for obj in self])
-        cg = sum([obj.pos * obj.mass for obj in self], Vector()) / mass
-
-        self.dists = [abs(p-cg) for p in self.points]
-        self.pos = cg + pos
-        RigidBody.__init__(self, pos(), mass=mass)
+        gravity_center = sum([obj.pos * obj.mass for obj in self], Vector()) / mass
+        self.points = [body.pos - gravity_center for body in self._bodies]
+        self.dists = [abs(p) for p in self.points]
+        self.pos = pos - gravity_center
+        print(self.points)
+        RigidBody.__init__(self, self.pos(), mass=mass)
         # TODO calc moment of inertia
         self.moi = 999999999
 
@@ -22,13 +23,14 @@ class Metabody(RigidBody):
         return iter(self._bodies)
 
     def actualize(self, time):
+        pass
         for i, obj in enumerate(self):
             self._forces += [(r + self.points[i], f) for r, f in obj._forces]
             obj._forces = []
         RigidBody.actualize(self, time)
 
         self.points = [point + point.normal(False) * self._omega * time for point in self.points]
-        self.points = [point.unit() * self.dists[i] for i, point in enumerate(self.points)]
+        # self.points = [point.unit() * self.dists[i] for i, point in enumerate(self.points)]
 
         for i, obj in enumerate(self):
             obj.pos = self.points[i] + self.pos
@@ -44,25 +46,25 @@ class Car(Metabody):
     def __init__(self, pos):
         height = 99
         width = 201
-        wheel_radius = 50
+        wheel_radius = 40
         # points = (Vector(width / 2, height / 2), Vector(0, height), Vector(width, height))
-        self.body = RectBody((0, 0, width, height))
+        self.frame = RectBody((0, 0, width, height))
         self.wheel = RoundBody(Vector(0, height), wheel_radius, affected_by_gravity=False)
         self.wheel2 = RoundBody(Vector(width, height), wheel_radius, affected_by_gravity=False)
-        Metabody.__init__(self, Vector(*pos), self.body, self.wheel, self.wheel2)
+        Metabody.__init__(self, Vector(*pos), self.frame, self.wheel, self.wheel2)
 
     def draw(self, screen):
-        # body
+        # frame
         pygame.draw.polygon(screen,
-                            (0, 50, 0),
-                            [list((p + self.body.pos)()) for p in
-                             self.body.points], 0
+                            (10, 10, 10),
+                            [list((p + self.frame.pos)()) for p in
+                             self.frame.points], 0
                             )
         # wheels
-        pygame.draw.circle(screen, (255, 20, 20), self.wheel.pos.int(), self.wheel.radio)
-        pygame.draw.circle(screen, (20, 100, 20), self.wheel2.pos.int(), self.wheel2.radio)
+        pygame.draw.circle(screen, (50, 0, 0), self.wheel.pos.int(), self.wheel.radio)
+        pygame.draw.circle(screen, (0, 50, 0), self.wheel2.pos.int(), self.wheel2.radio)
 
         #
-        pygame.draw.circle(screen, (20, 100, 255), self.pos.int(), 5)
-        pygame.draw.line(screen, (0, 255, 0), self.body.pos(), self.pos())
-
+        pygame.draw.circle(screen, (0, 0, 255), (
+                    sum([obj.pos * obj.mass for obj in self], Vector()) / sum([obj.mass for obj in self])).int(), 5)
+        # pygame.draw.line(screen, (0, 255, 0), self.frame.pos(), self.pos())
