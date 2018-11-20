@@ -9,7 +9,7 @@ from vector_2d import Vector
 from objects import Bola, Rect
 from rigidBodies import LineObject, RoundBody
 from interaction import Interaction
-from metaobject import Car
+from metabody import Car
 import time
 
 if __name__ == "__main__":
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         platform1,
         # platform2,
     ]
-    car = Car((150, 250))
+    car = Car((50, 50))
     box = (floor, ceiling) + walls
     mouse = RoundBody((0, 0))
 

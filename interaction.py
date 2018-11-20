@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from rigidBodies import *
-from metaobject import Metaobject
+from metabody import Metabody
 import time
 
 
@@ -53,7 +53,7 @@ class Interaction(object):
                 return
 
             # if isinstance(obj1, (RoundBody, RectBody)) and isinstance(obj2, Metaobject):
-            if isinstance(obj2, Metaobject):
+            if isinstance(obj2, Metabody):
                 for obj in obj2:
                     Interaction.check_collision(obj, obj1)
                 return

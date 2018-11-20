@@ -21,7 +21,7 @@ class RigidBody(object):
         self.affected_by_gravity = affected_by_gravity
 
     def __repr__(self):
-        return type(self).__name__ + '{}'.format(self.pos())
+        return type(self).__name__ + f'{self.pos()}'
 
     @property
     def pos(self):
