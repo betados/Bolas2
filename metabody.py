@@ -16,8 +16,8 @@ class Metabody(RigidBody):
         self.pos = pos - gravity_center
         print(self.points)
         RigidBody.__init__(self, self.pos(), mass=mass)
-        # TODO calc moment of inertia
-        self.moi = 999999999
+        # FIXME calc moment of inertia correctly
+        self.moi = sum([body.moi for i, body in enumerate(self._bodies)])
 
     def __iter__(self):
         return iter(self._bodies)
@@ -30,14 +30,10 @@ class Metabody(RigidBody):
         RigidBody.actualize(self, time)
 
         self.points = [point + point.normal(False) * self._omega * time for point in self.points]
-        # self.points = [point.unit() * self.dists[i] for i, point in enumerate(self.points)]
+        self.points = [point.unit() * self.dists[i] for i, point in enumerate(self.points)]
 
         for i, obj in enumerate(self):
             obj.pos = self.points[i] + self.pos
-            # rel_pos = obj.pos - self.pos
-            # dist = abs(rel_pos)
-            # obj.pos = self.pos + rel_pos + (rel_pos + rel_pos.normal(False)) * self._omega * time
-            # obj.pos = self.pos + (obj.pos - self.pos).unit() * dist
             obj._omega = self._omega
             obj.actualize(time)
 

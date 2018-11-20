@@ -79,6 +79,7 @@ class RoundBody(RigidBody):
         RigidBody.__init__(self, pos, **kwargs)
         self.radio = radio
         self.k = 9
+        self.moi = self.mass * (self.radio ** 2) / 2
 
     def append_force(self, force):
         self._forces.append((Vector(), force))
