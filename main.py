@@ -60,7 +60,7 @@ class Main(object):
 
     def loop(self):
         while not self.done:
-            self.screen.fill((0, 0, 0, 255))
+
             time = self.reloj.get_time()
 
             self.acum_time += time
@@ -68,25 +68,28 @@ class Main(object):
                 self.draw(time)
                 self.acum_time = 0
 
-            if time:
-                self.mouse.v = Vector(*pygame.mouse.get_rel()) / time
-                self.mouse.pos = Vector(*pygame.mouse.get_pos())
-            if pygame.mouse.get_pressed()[0]:
-                if self.owned_bola:
-                    self.owned_bola.v = self.mouse.v
-                if self.owned_platform:
-                    self.owned_platform.append_force(
-                        self.owned_platform.click_point_on_platform - self.owned_platform.pos,
-                        self.mouse.pos - self.owned_platform.click_point_on_platform)
-                    self.p_list = [self.owned_platform.pos, self.owned_platform.click_point_on_platform, self.mouse.pos]
-                else:
-                    self.p_list = None
+            self.mouse_handler(time)
 
             self.events()
 
             self.interactions(time)
 
             self.reloj.tick(self.fps)
+
+    def mouse_handler(self, time):
+        if time:
+            self.mouse.v = Vector(*pygame.mouse.get_rel()) / time
+            self.mouse.pos = Vector(*pygame.mouse.get_pos())
+        if pygame.mouse.get_pressed()[0]:
+            if self.owned_bola:
+                self.owned_bola.v = self.mouse.v
+            if self.owned_platform:
+                self.owned_platform.append_force(
+                    self.owned_platform.click_point_on_platform - self.owned_platform.pos,
+                    self.mouse.pos - self.owned_platform.click_point_on_platform)
+                self.p_list = [self.owned_platform.pos, self.owned_platform.click_point_on_platform, self.mouse.pos]
+            else:
+                self.p_list = None
 
     def events(self):
         events = pygame.event.get()
@@ -117,6 +120,7 @@ class Main(object):
             self.done = True
 
     def draw(self, time):
+        self.screen.fill((0, 0, 0))
         if self.owned_platform:
             try:
                 pygame.draw.lines(self.screen, (0, 200, 0), False, [[p.x, p.y] for p in self.p_list])
