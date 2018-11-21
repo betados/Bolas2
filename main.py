@@ -68,9 +68,6 @@ class Main(object):
                 self.draw(time)
                 self.acum_time = 0
 
-            events = pygame.event.get()
-            keys = pygame.key.get_pressed()
-
             if time:
                 self.mouse.v = Vector(*pygame.mouse.get_rel()) / time
                 self.mouse.pos = Vector(*pygame.mouse.get_pos())
@@ -85,34 +82,39 @@ class Main(object):
                 else:
                     self.p_list = None
 
-            for event in events:
-                if event.type == pygame.QUIT:
-                    self.done = True
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    for bola in self.bolas:
-                        if Interaction.is_clicked(bola, self.mouse):
-                            self.owned_bola = bola
-                            break
-                    for platform in self.platforms:
-                        if Interaction.is_clicked(platform, self.mouse):
-                            self.owned_platform = platform
-                            self.owned_platform.click_point_on_platform = self.mouse.pos
-                            break
+            self.events()
 
-                    if Interaction.is_clicked(self.car.frame, self.mouse):
-                        self.owned_platform = self.car.frame
-                        self.owned_platform.click_point_on_platform = self.mouse.pos
-
-                if event.type == pygame.MOUSEBUTTONUP:
-                    self.owned_bola = None
-                    self.owned_platform = None
-
-            if keys[pygame.K_ESCAPE]:
-                self.done = True
-
-            self.interaction(time)
+            self.interactions(time)
 
             self.reloj.tick(self.fps)
+
+    def events(self):
+        events = pygame.event.get()
+        keys = pygame.key.get_pressed()
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.done = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for bola in self.bolas:
+                    if Interaction.is_clicked(bola, self.mouse):
+                        self.owned_bola = bola
+                        break
+                for platform in self.platforms:
+                    if Interaction.is_clicked(platform, self.mouse):
+                        self.owned_platform = platform
+                        self.owned_platform.click_point_on_platform = self.mouse.pos
+                        break
+
+                if Interaction.is_clicked(self.car.frame, self.mouse):
+                    self.owned_platform = self.car.frame
+                    self.owned_platform.click_point_on_platform = self.mouse.pos
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.owned_bola = None
+                self.owned_platform = None
+
+        if keys[pygame.K_ESCAPE]:
+            self.done = True
 
     def draw(self, time):
         if self.owned_platform:
@@ -128,7 +130,7 @@ class Main(object):
         self.car.actualize(time)
         pygame.display.flip()
 
-    def interaction(self, time):
+    def interactions(self, time):
         for bola1 in self.bolas:
             bola1.actualize(time)
             for element in self.box:
