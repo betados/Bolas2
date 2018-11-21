@@ -58,7 +58,6 @@ class Main(object):
         self.box = (floor, ceiling) + walls
         self.mouse = RoundBody((0, 0))
 
-
     def loop(self):
         while not self.done:
             self.screen.fill((0, 0, 0, 255))
@@ -111,29 +110,7 @@ class Main(object):
             if keys[pygame.K_ESCAPE]:
                 self.done = True
 
-            for bola1 in self.bolas:
-                bola1.actualize(time)
-                for element in self.box:
-                    # FIXME si va demasiado rápido atraviesa
-                    Interaction.check_collision(bola1, element)
-                for platform in self.platforms:
-                    Interaction.check_collision(bola1, platform)
-                for bola2 in self.bolas:
-                    # TODO recorrer solo la mitad de las bolas y en la interacción aplicar fuerzas a las dos
-                    Interaction.check_collision(bola1, bola2)
-
-                # TODO comprobarlo solo una vez y aplicar la fuerza en los dos
-                Interaction.check_collision(bola1, self.car)
-                Interaction.check_collision(self.car, bola1)
-
-            for platform_i in self.platforms:
-                # TODO comprobarlo solo una vez y aplicar la fuerza en los dos
-                Interaction.check_collision(platform_i, self.car)
-                Interaction.check_collision(self.car, platform_i)
-                for platform_j in self.platforms:
-                    # TODO recorrer solo la mitad de las plataformas y en la interacción aplicar fuerzas a las dos
-                    Interaction.check_collision(platform_i, platform_j)
-                platform_i.actualize(time)
+            self.interaction(time)
 
             self.reloj.tick(self.fps)
 
@@ -151,8 +128,30 @@ class Main(object):
         self.car.actualize(time)
         pygame.display.flip()
 
-    def interaction(self):
-        pass
+    def interaction(self, time):
+        for bola1 in self.bolas:
+            bola1.actualize(time)
+            for element in self.box:
+                # FIXME si va demasiado rápido atraviesa
+                Interaction.check_collision(bola1, element)
+            for platform in self.platforms:
+                Interaction.check_collision(bola1, platform)
+            for bola2 in self.bolas:
+                # TODO recorrer solo la mitad de las bolas y en la interacción aplicar fuerzas a las dos
+                Interaction.check_collision(bola1, bola2)
+
+            # TODO comprobarlo solo una vez y aplicar la fuerza en los dos
+            Interaction.check_collision(bola1, self.car)
+            Interaction.check_collision(self.car, bola1)
+
+        for platform_i in self.platforms:
+            # TODO comprobarlo solo una vez y aplicar la fuerza en los dos
+            Interaction.check_collision(platform_i, self.car)
+            Interaction.check_collision(self.car, platform_i)
+            for platform_j in self.platforms:
+                # TODO recorrer solo la mitad de las plataformas y en la interacción aplicar fuerzas a las dos
+                Interaction.check_collision(platform_i, platform_j)
+            platform_i.actualize(time)
 
 
 if __name__ == "__main__":
